@@ -35,7 +35,7 @@ def detect_robot() -> Robot:
         # Replace these with your actual MAC addresses
         # You can find MAC addresses via: ssh admin@roborio-XXXX-frc.local "cat /sys/class/net/eth0/address"
         LARRY_MAC_ADDRESSES = [
-            "00:80:2f:XX:XX:XX",  # Replace with Larry's actual MAC
+            "00:80:2f:33:9f:1d",  # Replace with Larry's actual MAC
             # Add other possible MAC addresses for Larry if it has multiple interfaces
         ]
         COMP_MAC_ADDRESSES = [

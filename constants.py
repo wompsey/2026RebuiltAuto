@@ -43,6 +43,10 @@ class Constants:
     class ClimberConstants:
         """Climber subsystem constants. Values may differ between robots."""
         pass  # Values set below based on robot
+    
+    class IntakeConstants:
+        """Intake subsystem constants. Values may differ between robots."""
+        pass  # Values set below based on robot
 
 
 # Initialize robot-specific hardware configurations
@@ -96,6 +100,34 @@ def _init_hardware_configs():
         Constants.ClimberConstants.VOLTAGE_INWARDS = 16.0
         Constants.ClimberConstants.VOLTAGE_OUTWARDS = -4.0
         Constants.ClimberConstants.CLIMB_FULL_THRESHOLD = 100.0  # Adjust as needed
+    
+    # Intake constants configuration
+    if currentRobot == Robot.LARRY:
+        # Larry (test robot) intake configuration
+        Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
+        Constants.IntakeConstants.GAINS = (Slot0Configs()
+            .with_k_p(0.1)
+            .with_k_i(0.0)
+            .with_k_d(0.0)
+            .with_k_s(0.0)
+            .with_k_v(0.0)
+            .with_k_a(0.0)
+        )
+        Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
+        Constants.IntakeConstants.INSIDE_FRAME_ANGLE = 45.0  # Degrees (example value)
+    else:  # COMP or UNKNOWN defaults to COMP
+        # Comp (competition robot) intake configuration
+        Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
+        Constants.IntakeConstants.GAINS = (Slot0Configs()
+            .with_k_p(0.1)
+            .with_k_i(0.0)
+            .with_k_d(0.0)
+            .with_k_s(0.0)
+            .with_k_v(0.0)
+            .with_k_a(0.0)
+        )
+        Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
+        Constants.IntakeConstants.INSIDE_FRAME_ANGLE = 45.0  # Degrees (example value)
 
 
 # Initialize hardware configs at module load time
