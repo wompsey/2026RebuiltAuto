@@ -24,15 +24,12 @@ class ClimberSubsystem(StateSubsystem):
     """
 
     class SubsystemState(Enum):
-        STOP = auto()
-        # STOW = auto()
-        # EXTEND = auto()
+        STOW = auto()
+        EXTEND = auto()
 
     _state_configs: dict[SubsystemState, tuple[float, float]] = {
-        SubsystemState.STOP: (0.0, Constants.ClimberConstants.SERVO_DISENGAGED_ANGLE)
-        # Add other state configs as needed
-        # SubsystemState.CLIMB_IN: (Constants.ClimberConstants.VOLTAGE_INWARDS, Constants.ClimberConstants.SERVO_ENGAGED_ANGLE)
-        # SubsystemState.CLIMB_OUT: (Constants.ClimberConstants.VOLTAGE_OUTWARDS, Constants.ClimberConstants.SERVO_DISENGAGED_ANGLE)
+        SubsystemState.STOW: (0.0, Constants.ClimberConstants.SERVO_DISENGAGED_ANGLE),
+        SubsystemState.EXTEND: (0.0, Constants.ClimberConstants.SERVO_ENGAGED_ANGLE)
     }
 
     def __init__(self, io: ClimberIO) -> None:
@@ -41,7 +38,7 @@ class ClimberSubsystem(StateSubsystem):
 
         :param io: The climber IO implementation (ClimberIOTalonFX for real hardware, ClimberIOSim for simulation)
         """
-        super().__init__("Climber", self.SubsystemState.STOP)
+        super().__init__("Climber", self.SubsystemState.S)
         
         self._io: Final[ClimberIO] = io
         self._inputs = ClimberIO.ClimberIOInputs()

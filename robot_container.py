@@ -9,10 +9,11 @@ from phoenix6 import swerve, utils
 from wpilib import DriverStation, SendableChooser, XboxController, SmartDashboard, getDeployDirectory
 from wpimath.geometry import Rotation2d, Pose2d
 from wpimath.units import rotationsToRadians
-from robot_config import currentRobot, has_subsystem  # Robot detection (Larry vs Comp)
+from robot_config import currentRobot, has_subsystem, Robot # Robot detection (Larry vs Comp)
 
 from constants import Constants
 from generated.tuner_constants import TunerConstants
+from generated.larry.tuner_constants import TunerConstants as LarryTunerConstants
 from subsystems.climber import ClimberSubsystem
 from subsystems.climber.io import ClimberIOTalonFX, ClimberIOSim
 from subsystems.intake import IntakeSubsystem
@@ -32,6 +33,8 @@ class RobotContainer:
         print(f"Initializing RobotContainer for: {currentRobot.name}")
         self._max_speed = TunerConstants.speed_at_12_volts
         self._max_angular_rate = rotationsToRadians(1)
+        if currentRobot == Robot.LARRY:
+            self._max_speed = LarryTunerConstants.speed_at_12_volts
 
         self._driver_controller = commands2.button.CommandXboxController(0)
         self._function_controller = commands2.button.CommandXboxController(1)
@@ -46,12 +49,17 @@ class RobotContainer:
             case Constants.Mode.REAL:
                 # Real robot, instantiate hardware IO implementations
                 if has_subsystem("drivetrain"):
-                    self.drivetrain = TunerConstants.create_drivetrain()
-                self.vision = VisionSubsystem(
-                    self.drivetrain,
-                    Constants.VisionConstants.FRONT,
-                    Constants.VisionConstants.LAUNCHER,
-                )
+                    if currentRobot == Robot.LARRY:
+                        self.drivetrain = LarryTunerConstants.create_drivetrain()
+                    else:
+                        self.drivetrain = TunerConstants.create_drivetrain()
+
+                if has_subsystem("vision"):
+                    self.vision = VisionSubsystem(
+                        self.drivetrain,
+                        Constants.VisionConstants.FRONT,
+                        Constants.VisionConstants.LAUNCHER,
+                    )
 
                 # Create climber only if it exists on this robot
                 if has_subsystem("climber"):

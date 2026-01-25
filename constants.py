@@ -26,10 +26,19 @@ class Constants:
 
     FIELD_LAYOUT: Final[AprilTagFieldLayout] = AprilTagFieldLayout.loadField(AprilTagField.k2025ReefscapeWelded)
 
-    # Hardware configurations - robot-specific
+    # Hardware configurations
+    # Can ids are to be set in the same order as they are wired in the CAN bus
     class CanIDs:
-        """CAN IDs for hardware devices. Values differ between Larry and Comp."""
-        pass  # Values set below based on robot
+        #All motors are Kraken X60 unless otherwise specified
+        CLIMB_TALON = 10
+        INTAKE_TALON = 11
+        KICKER_TALON = 12
+        TURRET_TALON = 13
+        HOOD_TALON = 14 # Kraken X44
+        LAUNCHER_LEFT_TALON = 15 # Kraken X44
+        LAUNCHER_RIGHT_TALON = 16 # Kraken X44
+        TURRET_CANCODER = 17
+        HOOD_CANCODER = 18
     
     class ClimberConstants:
         """Climber subsystem constants. Values may differ between robots."""
@@ -57,18 +66,6 @@ class Constants:
 # Initialize robot-specific hardware configurations
 def _init_hardware_configs():
     """Initialize hardware configurations based on detected robot."""
-    
-    # CAN IDs configuration
-    if currentRobot == Robot.LARRY:
-        # Larry (test robot) CAN IDs
-        Constants.CanIDs.CLIMB_TALON = 10
-        Constants.CanIDs.INTAKE_TALON = 11
-        # Add other Larry-specific IDs here
-    else:  # COMP or UNKNOWN defaults to COMP
-        # Comp (competition robot) CAN IDs
-        Constants.CanIDs.CLIMB_TALON = 15
-        Constants.CanIDs.INTAKE_TALON = 16
-        # Add other Comp-specific IDs here
     
     # Climber constants configuration
     if currentRobot == Robot.LARRY:
