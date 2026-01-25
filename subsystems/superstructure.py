@@ -8,8 +8,8 @@ from wpimath.geometry import Pose3d
 
 from constants import Constants
 from subsystems.intake import IntakeSubsystem
-from subsystems.drive import Drive
-from subsystems.vision import Vision
+from subsystems.swerve import SwerveSubsystem
+from subsystems.vision import VisionSubsystem
 from subsystems.climber import ClimberSubsystem
 
 
@@ -26,14 +26,14 @@ class Superstructure(Subsystem):
     # Map each goal to each subsystem state to reduce code complexity
     _goal_to_states: dict[Goal,
             tuple[
-                Optional[Vision.SubsystemState]
+                Optional[VisionSubsystem.SubsystemState]
             ]] = {
-        Goal.DEFAULT: (IntakeSubsystem.SubsystemState.STOP, Vision.SubsystemState.ALL_ESTIMATES),
-        Goal.CLIMBING: (IntakeSubsystem.SubsystemState.STOP, Vision.SubsystemState.ALL_ESTIMATES),
+        Goal.DEFAULT: (IntakeSubsystem.SubsystemState.STOP, VisionSubsystem.SubsystemState.ALL_ESTIMATES),
+        Goal.CLIMBING: (IntakeSubsystem.SubsystemState.STOP, VisionSubsystem.SubsystemState.ALL_ESTIMATES),
        
     }
 
-    def __init__(self, drivetrain: Drive, vision: Vision, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
+    def __init__(self, drivetrain: SwerveSubsystem, vision: VisionSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
         Subsystems are optional to support robots that don't have all hardware.
@@ -41,7 +41,7 @@ class Superstructure(Subsystem):
         :param drivetrain: Swerve drive base
         :type drivetrain: Drive
         :param vision: Handles all vision estimates
-        :type vision: Vision
+        :type vision: VisionSubsystem
         :param climber: Subsystem that handles the climber (optional)
         :type climber: Optional[ClimberSubsystem]
         :param intake: Subsystem that handles the intake (optional)
@@ -76,7 +76,7 @@ class Superstructure(Subsystem):
         vision_state = self._goal_to_states.get(goal, (None, None, None, None))
         
         if vision_state:
-            self.vision.set_desired_state(vision_state)
+            self.VisionSubsystem.set_desired_state(vision_state)
         
         # Handle intake if present
         if self.intake is not None:

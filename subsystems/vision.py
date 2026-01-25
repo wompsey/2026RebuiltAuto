@@ -1,30 +1,26 @@
 import concurrent.futures
 import math
 from enum import Enum
-from typing import Final
 
-from pykit.autolog import autologgable_output
-from pykit.logger import Logger
 from phoenix6 import utils
-from wpilib import DataLogManager, Alert
+from wpilib import DataLogManager
 from wpimath.geometry import Pose3d, Pose2d
 
 from constants import Constants
 from lib.limelight import PoseEstimate, LimelightHelpers
 from subsystems import StateSubsystem
 from subsystems.swerve import SwerveSubsystem
-from subsystems.vision.io import VisionIO
 
 
-@autologgable_output
 class VisionSubsystem(StateSubsystem):
     """
     Handles all camera calculations on the robot.
     This is primarily used for combining MegaTag pose estimates and ensuring no conflicts between Limelights.
 
     Our vision system consists of:
-    - 1 Limelight 4 (center of the intake system)
-    - 1 Limelight 4 (attached to the bottom of the launcher)
+    - 1 Limelight 4 (center back of the elevator crossbeam)
+    - 1 Limelight 4 (under the pivot, 20-degree inclination)
+    - 2 Limelight 3As (front swerve covers, 15-degree outward incline)
 
     We use the starting position in auto to determine our robot heading to calibrate our cameras.
     """
@@ -39,21 +35,6 @@ class VisionSubsystem(StateSubsystem):
         NO_ESTIMATES = []
         """ Ignores all Limelight pose estimates. """
 
-    def __init__(self, io: VisionIO) -> None:
-        """
-        Initialize the climber subsystem.
-
-        :param io: The climber IO implementation (VisionIOTalonFX for real hardware, VisionIOSim for simulation)
-        """
-        super().__init__("Climber", self.SubsystemState.STOP)
-        
-        self._io: Final[VisionIO] = io
-        self._inputs = VisionIO.VisionIOInputs()
-        
-        # Alert for disconnected motor
-        self._motorDisconnectedAlert = Alert("Climber motor is disconnected.", Alert.AlertType.kError)
-
-    """
     def __init__(self, swerve: SwerveSubsystem, *cameras: str):
         super().__init__("Vision", self.SubsystemState.ALL_ESTIMATES)
 
@@ -68,7 +49,6 @@ class VisionSubsystem(StateSubsystem):
         # self._visible_tags_pub = self.get_network_table().getStructArrayTopic("Visible Tags", Pose3d).publish()
         # self._final_measurement_pub = self.get_network_table().getStructTopic("Best Measurement", Pose2d).publish()
         # self._vision_measurements = self.get_network_table().getStructArrayTopic("All Measurements", Pose2d).publish()
-    """
 
     def periodic(self):
         super().periodic()

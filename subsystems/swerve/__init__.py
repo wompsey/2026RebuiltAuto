@@ -390,7 +390,10 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
 
         state = self.get_state_copy()
         self._pose_pub.set(state.pose)
-        self._odom_freq.set(1.0 / state.odometry_period)
+        if state.odometry_period > 0:
+            self._odom_freq.set(1.0 / state.odometry_period)
+        else:
+            self._odom_freq.set(0)
         # self._module_states_pub.set(state.module_states)
         # self._module_targets_pub.set(state.module_targets)
         # self._speeds_pub.set(state.speeds)

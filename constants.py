@@ -48,6 +48,11 @@ class Constants:
         """Intake subsystem constants. Values may differ between robots."""
         pass  # Values set below based on robot
 
+    class VisionConstants:
+        FRONT = "limelight-fr"
+        LAUNCHER = "limelight-al"
+
+
 
 # Initialize robot-specific hardware configurations
 def _init_hardware_configs():
