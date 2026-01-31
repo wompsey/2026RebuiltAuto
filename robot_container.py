@@ -192,6 +192,7 @@ class RobotContainer:
 
     def _setup_controller_bindings(self) -> None:
         hid = self._driver_controller.getHID()
+        func_hid = self._function_controller.getHID()
         self.drivetrain.setDefaultCommand(
             self.drivetrain.apply_request(
                 lambda: self._field_centric
@@ -212,20 +213,20 @@ class RobotContainer:
 
         if self.intake is not None:
             self._driver_controller.rightBumper().whileTrue(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE)
-            ).onFalse(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.STOP)
-            )
-            self._driver_controller.leftBumper().whileTrue(
                 self.intake.set_desired_state_command(self.intake.SubsystemState.OUTPUT)
             ).onFalse(
+                self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE)
+            )
+            self._driver_controller.b().whileTrue(
                 self.intake.set_desired_state_command(self.intake.SubsystemState.STOP)
+            ).onFalse(
+                self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE)
             )
         else:
             print("Intake subsystem not available on this robot, unable to bind intake buttons")
 
         self._driver_controller.a().whileTrue(self.drivetrain.apply_request(lambda: self._brake))
-        self._driver_controller.b().whileTrue(
+        self._driver_controller.x().whileTrue(
             self.drivetrain.apply_request(
                 lambda: self._point.with_module_direction(Rotation2d(-hid.getLeftY(), -hid.getLeftX()))
             )
@@ -259,19 +260,24 @@ class RobotContainer:
             self._function_controller.x(): self.superstructure.Goal.PASSDEPOT,
             self._function_controller.b(): self.superstructure.Goal.PASSOUTPOST,
             self._function_controller.a(): self.superstructure.Goal.DEFAULT,
-            self._function_controller.leftBumper(): self.superstructure.Goal.CLIMBREADY,
-            self._function_controller.rightBumper(): self.superstructure.Goal.CLIMB,
+            self._function_controller.povUp(): self.superstructure.Goal.CLIMBREADY,
+            self._function_controller.povDown(): self.superstructure.Goal.CLIMB,
         }
 
-        """ 
-        Leaving last year's goal bindings in for reference
+        Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
+            self.vision.set_desired_state(self.vision.SubsystemState.NO_ESTIMATES)
+        ).whileTrue(
+            self.hood.apply_request(func_hid.getRightY() * self._max_speed)
+        )
 
+        """
+        
         for button, goal in goal_bindings.items():
-            if goal is self.superstructure.Goal.L3_ALGAE or goal is self.superstructure.Goal.NET or goal is self.superstructure.Goal.L2_ALGAE or goal is self.superstructure.Goal.PROCESSOR:
+            if goal is self.superstructure.Goal.SCORE or goal is self.superstructure.Goal.PASSDEPOT or goal is self.superstructure.Goal.PASSOUTPOST:
                 (button.whileTrue(
                     self.superstructure.set_goal_command(goal)
-                    .alongWith(self.intake.set_desired_state_command(self.intake.SubsystemState.ALGAE_INTAKE)))
-                    .onFalse(self.intake.set_desired_state_command(self.intake.SubsystemState.ALGAE_HOLD)))
+                    .alongWith(self.intake.set_desired_state_command(self.launcher.SubsystemState.START)))
+                    .onFalse(self.intake.set_desired_state_command(self.launcher.SubsystemState.ALGAE_HOLD)))
             else:
                 button.onTrue(self.superstructure.set_goal_command(goal))
 
