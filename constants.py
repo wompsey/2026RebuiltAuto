@@ -24,7 +24,7 @@ class Constants:
     simMode: Final[Mode] = Mode.SIM
     currentMode: Final[Mode] = Mode.REAL if RobotBase.isReal() else simMode
 
-    FIELD_LAYOUT: Final[AprilTagFieldLayout] = AprilTagFieldLayout.loadField(AprilTagField.k2025ReefscapeWelded)
+    FIELD_LAYOUT: Final[AprilTagFieldLayout] = AprilTagFieldLayout.loadField(AprilTagField.k2026RebuiltWelded)
 
     # Hardware configurations
     # Can ids are to be set in the same order as they are wired in the CAN bus
@@ -40,7 +40,6 @@ class Constants:
         TURRET_CANCODER = 17
         HOOD_CANCODER = 18
     
-    """Values may differ between robots."""
     class ClimberConstants:
         GEAR_RATIO = None
         GAINS = None
@@ -72,6 +71,18 @@ class Constants:
     class VisionConstants:
         FRONT = "limelight-fr"
         LAUNCHER = "limelight-al"
+
+    class HoodConstants:
+        GEAR_RATIO = 68/3
+        GAINS = (Slot0Configs()
+                .with_k_p(6.343)
+                .with_k_i(0.0)
+                .with_k_d(0.2)
+                .with_k_s(0.0)
+                .with_k_v(0.0)
+                .with_k_a(0.0)
+)
+    SUPPLY_CURRENT = 35
 
 
 

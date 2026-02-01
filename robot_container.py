@@ -9,7 +9,7 @@ from pathplannerlib.auto import NamedCommands, PathPlannerAuto, AutoBuilder
 from pathplannerlib.util import FlippingUtil
 from phoenix6 import swerve
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.configs.config_groups import NeutralModeValue, MotorOutputConfigs, FeedbackConfigs
+from phoenix6.configs.config_groups import NeutralModeValue, MotorOutputConfigs, FeedbackConfigs, InvertedValue
 from pykit.networktables.loggeddashboardchooser import LoggedDashboardChooser
 from wpilib import XboxController, getDeployDirectory
 from wpimath.geometry import Rotation2d
@@ -25,6 +25,8 @@ from subsystems.intake import IntakeSubsystem
 from subsystems.superstructure import Superstructure
 from subsystems.swerve import SwerveSubsystem
 from subsystems.vision import VisionSubsystem
+from subsystems.hood import HoodSubsystem
+from subsystems.hood.io import HoodIOSim, HoodIOTalonFX
 
 
 class RobotContainer:
@@ -85,6 +87,25 @@ class RobotContainer:
                 else:
                     print("Climber subsystem not available on this robot")
 
+                    #create hood subsystem
+
+                if has_subsystem("hood"):
+                    hood_config = TalonFXConfiguration()
+                    hood_config.slot0 = Constants.HoodConstants.GAINS
+                    hood_config.feedback.sensor_to_mechanism_ratio = Constants.HoodConstants.GEAR_RATIO
+                    hood_config.motor_output.neutral_mode = NeutralModeValue.BRAKE
+                    hood_config.motor_output.inverted = InvertedValue.CLOCKWISE_POSITIVE
+
+                    hood_io = HoodIOTalonFX(
+                        Constants.CanIDs.HOOD_TALON,
+                        hood_config
+                    )
+
+                    self.hood = HoodSubsystem(hood_io)
+                    print("we hood")        # hood is present
+                else:
+                    print("straight out the suburbs")       # hood is not present
+
             case Constants.Mode.SIM:
                 # Sim robot, instantiate physics sim IO implementations (if available)
                 self.drivetrain = TunerConstants.create_drivetrain()
@@ -93,6 +114,10 @@ class RobotContainer:
                     Constants.VisionConstants.FRONT,
                     Constants.VisionConstants.LAUNCHER,
                 )
+                #hood
+                self.robot_pose_supplier = lambda: self.drivetrain.get_state().pose
+                self.hood = HoodSubsystem(HoodIOSim(), self.robot_pose_supplier)
+           
 
                 # Create climber only if it exists on this robot
                 if has_subsystem("climber"):
@@ -170,6 +195,7 @@ class RobotContainer:
 
     def _setup_controller_bindings(self) -> None:
         hid = self._driver_controller.getHID()
+
         self.drivetrain.setDefaultCommand(
             self.drivetrain.apply_request(
                 lambda: self._field_centric
@@ -208,6 +234,14 @@ class RobotContainer:
                 lambda: self._point.with_module_direction(Rotation2d(-hid.getLeftY(), -hid.getLeftX()))
             )
         )
+
+        if self.hood is not None: #simple binds for testing
+            self._function_controller.povLeft().whileTrue(self.hood.run(lambda: self.hood.io.setPosition(-0.1)))
+            self._function_controller.povRight().whileTrue(self.hood.run(lambda: self.hood.io.setPosition(0.1)))
+            self._driver_controller.povDown().whileTrue(self.hood.run(lambda:  self.hood.io.setPosition(self.hood.calculate_angle()/360)))
+        else:
+            print("bet you wish you had an adjustible hood. too bad you dont.")
+
 
         self._driver_controller.start().onTrue(self.drivetrain.runOnce(lambda: self.drivetrain.seed_field_centric()))
 

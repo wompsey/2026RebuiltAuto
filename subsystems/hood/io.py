@@ -4,11 +4,19 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import VoltageOut
+from phoenix6.controls import PositionVoltage
+
+from wpilib.simulation import DCMotorSim
+from wpimath.system.plant import DCMotor
+from wpimath.system.plant import LinearSystemId
+from wpimath.controller import PIDController
+from wpimath.geometry import Rotation2d
+
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
+from phoenix6.signals import InvertedValue
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees
+from wpimath.units import radians, radians_per_second, volts, amperes
 
 from constants import Constants
 from util import tryUntilOk
@@ -27,18 +35,16 @@ class HoodIO(ABC):
         # Motor status
         motorConnected: bool = False
         motorPosition: radians = 0.0
-        motorVelocity: radians_per_second = 0.0
         motorAppliedVolts: volts = 0.0
         motorCurrent: amperes = 0.0
-        motorTemperature: celsius = 0.0
 
 
     def updateInputs(self, inputs: HoodIOInputs) -> None:
         """Update the inputs with current hardware/simulation state."""
         pass
 
-    def setMotorVoltage(self, voltage: volts) -> None:
-        """Set the motor output voltage."""
+    def setPosition(self, rotation: Rotation2d) -> None:
+        """set rotoation."""
         pass
 
 
@@ -47,24 +53,33 @@ class HoodIOTalonFX(HoodIO):
     Real hardware implementation using TalonFX motor controller.
     """
 
-    def __init__(self, motor_id: int, motor_config: TalonFXConfiguration) -> None:
+    def __init__(self, motor_id: int) -> None:
         """
         Initialize the real hardware IO.
 
         :param motor_id: CAN ID of the TalonFX motor
         :param motor_config: TalonFX configuration to apply
         """
-        self._motor: Final[TalonFX] = TalonFX(motor_id, "*")
+
+        self._hoodMotor: Final[TalonFX] = TalonFX(motor_id, "rio")
+
+        motorConfig = TalonFXConfiguration()
+        motorConfig.slot0 = Constants.HoodConstants.GAINS
+        motorConfig.feedback.sensor_to_mechanism_ratio = Constants.HoodConstants.GEAR_RATIO
+        motorConfig.motor_output.neutral_mode = NeutralModeValue.BRAKE
+        motorConfig.motor_output.inverted = InvertedValue.CLOCKWISE_POSITIVE
+
+
         # Apply motor configuration
-        tryUntilOk(5, lambda: self._motor.configurator.apply(motor_config, 0.25))
-        tryUntilOk(5, lambda: self._motor.set_position(0, 0.25))
+        tryUntilOk(5, lambda: self._hoodMotor.configurator.apply(motorConfig, 0.25))
+
 
         # Create status signals for motor
-        self._position: Final = self._motor.get_position()
-        self._velocity: Final = self._motor.get_velocity()
-        self._appliedVolts: Final = self._motor.get_motor_voltage()
-        self._current: Final = self._motor.get_stator_current()
-        self._temperature: Final = self._motor.get_device_temp()
+        self._position: Final = self._hoodMotor.get_position()
+        self._velocity: Final = self._hoodMotor.get_velocity()
+        self._appliedVolts: Final = self._hoodMotor.get_motor_voltage()
+        self._current: Final = self._hoodMotor.get_stator_current()
+        self._temperature: Final = self._hoodMotor.get_device_temp()
 
         # Configure update frequencies
         BaseStatusSignal.set_update_frequency_for_all(
@@ -75,10 +90,10 @@ class HoodIOTalonFX(HoodIO):
             self._current,
             self._temperature
         )
-        self._motor.optimize_bus_utilization()
+        self._hoodMotor.optimize_bus_utilization()
 
         # Voltage control request
-        self._voltageRequest: Final[VoltageOut] = VoltageOut(0)
+        self._voltageRequest: Final[PositionVoltage] = PositionVoltage(0)
 
     def updateInputs(self, inputs: HoodIO.HoodIOInputs) -> None:
         """Update inputs with current motor state."""
@@ -94,48 +109,53 @@ class HoodIOTalonFX(HoodIO):
         # Update motor inputs
         inputs.motorConnected = motorStatus.is_ok()
         inputs.motorPosition = self._position.value_as_double
-        inputs.motorVelocity = self._velocity.value_as_double
         inputs.motorAppliedVolts = self._appliedVolts.value_as_double
         inputs.motorCurrent = self._current.value_as_double
-        inputs.motorTemperature = self._temperature.value_as_double
 
-    def setMotorVoltage(self, voltage: volts) -> None:
-        """Set the motor output voltage."""
-        self._voltageRequest.output = voltage
-        self._motor.set_control(self._voltageRequest)
+    def setPosition(self, rotation: Rotation2d) -> None:
+        """Set the poistion."""
+        self._positionRequest = PositionVoltage
+        self._hoodMotor.set_control(self._positionRequest)
 
 
 
 class HoodIOSim(HoodIO):
-    """
-    Simulation implementation for testing without hardware.
-    """
-
     def __init__(self) -> None:
-        """Initialize the simulation IO."""
-        self._motorPosition: float = 0.0
-        self._motorVelocity: float = 0.0
-        self._motorAppliedVolts: float = 0.0
+        gearbox = DCMotor.krakenX44FOC(1)
+        self.appliedVolts = 0.0
+        self.closedloop = False
+
+        self._hoodSim = DCMotorSim(
+            LinearSystemId.DCMotorSystem(gearbox, 0.00783112228, Constants.HoodConstants.GEAR_RATIO),
+            gearbox
+        )
+
+        self.controla = PIDController(
+            Constants.HoodConstants.GAINS.k_p,
+            Constants.HoodConstants.GAINS.k_i,
+            Constants.HoodConstants.GAINS.k_d
+        )
+
 
     def updateInputs(self, inputs: HoodIO.HoodIOInputs) -> None:
-        """Update inputs with simulated state."""
-        # Simulate motor behavior (simple integration)
-        # In a real simulation, you'd use a physics model here
-        dt = 0.02  # 20ms periodic
-        self._motorPosition += self._motorVelocity * dt
+        if self.closedloop:
+            self.appliedVolts = (self.controla.calculate(self._hoodSim.getAngularPosition()))
+        else:
+            self.controla.reset()
 
-        # Update inputs
+        self._hoodSim.setInputVoltage(max(-12.0, min(self.appliedVolts, 12.0)))
+
+        self._hoodSim.update(0.02)
         inputs.motorConnected = True
-        inputs.motorPosition = self._motorPosition
-        inputs.motorVelocity = self._motorVelocity
-        inputs.motorAppliedVolts = self._motorAppliedVolts
-        inputs.motorCurrent = abs(self._motorAppliedVolts / 12.0) * 40.0  # Rough current estimate
-        inputs.motorTemperature = 25.0  # Room temperature
+        inputs.motorAppliedVolts = self.appliedVolts
+        inputs.motorPosition = self._hoodSim.getAngularPosition()
+        inputs.motorCurrent = abs(self._hoodSim.getCurrentDraw())
 
 
-    def setMotorVoltage(self, voltage: volts) -> None:
-        """Set the motor output voltage (simulated)."""
-        self._motorAppliedVolts = max(-12.0, min(12.0, voltage))
-        # Simple velocity model: voltage -> velocity (with some damping)
-        self._motorVelocity = self._motorAppliedVolts * 10.0  # Adjust multiplier as needed
+    def setOpenLoop(self, output: volts) -> None:
+        self.closedloop = False
+        self.appliedVolts = output
 
+    def setPosition(self, rotation: Rotation2d) -> None:
+        self.closedloop = True
+        self.controla.setSetpoint(rotation)
