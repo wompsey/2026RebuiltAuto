@@ -49,8 +49,8 @@ class Constants:
         pass  # Values set below based on robot
 
     class VisionConstants:
-        FRONT = "limelight-fr"
-        LAUNCHER = "limelight-al"
+        FRONT = "limelight-front"
+        # LAUNCHER = "limelight-al"
 
     class AutoAlignConstants:
         TRANSLATION_P = 9

@@ -9,6 +9,7 @@ from urllib.parse import urlparse, ParseResult
 
 from ntcore import NetworkTable, NetworkTableEntry, NetworkTableInstance, DoubleArrayEntry
 from wpimath import units
+from wpinet import PortForwarder
 from wpimath.geometry import (
 	Pose2d,
 	Pose3d,
@@ -957,6 +958,21 @@ class LimelightHelpers:
 		entries = [forward, side, up, roll, pitch, yaw]
 		LimelightHelpers.set_limelight_NTDoubleArray(limelight_name, "camerapose_robotspace_set", entries)
 
+	@staticmethod
+	def setup_port_forwarding_usb(usb_index: int) -> None:
+		"""
+		Set up port forwarding for a Limelight 3A/3G connected via USB to the roboRIO.
+		Allows access to the Limelight web UI and video stream via the robot's IP.
+
+		For usb_index 0: roboRIO ports 5800-5809 forward to 172.29.0.1 (UI at robotIP:5801, stream at robotIP:5800).
+		For usb_index 1: roboRIO ports 5810-5819 forward to 172.29.1.1 (UI at robotIP:5811, stream at robotIP:5810).
+
+		Call once during robot initialization.
+		"""
+		ip = f"172.29.{usb_index}.1"
+		base_port = 5800 + (usb_index * 10)
+		for i in range(10):
+			PortForwarder.getInstance().add(base_port + i, ip, 5800 + i)
 
 	@staticmethod
 	def set_python_script_data(limelight_name: str, outgoing_python_data: list[float]) -> None:

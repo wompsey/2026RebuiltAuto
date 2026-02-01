@@ -58,7 +58,6 @@ class RobotContainer:
                     self.vision = VisionSubsystem(
                         self.drivetrain,
                         Constants.VisionConstants.FRONT,
-                        Constants.VisionConstants.LAUNCHER,
                     )
 
                 # Create climber only if it exists on this robot
@@ -91,7 +90,6 @@ class RobotContainer:
                 self.vision = VisionSubsystem(
                     self.drivetrain,
                     Constants.VisionConstants.FRONT,
-                    Constants.VisionConstants.LAUNCHER,
                 )
 
                 # Create climber only if it exists on this robot
@@ -267,7 +265,8 @@ class RobotContainer:
         Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
             self.vision.set_desired_state(self.vision.SubsystemState.NO_ESTIMATES)
         ).whileTrue(
-            self.hood.apply_request(func_hid.getRightY() * self._max_speed)
+            #self.hood.apply_request(func_hid.getRightY() * self._max_speed)
+            print("Left Trigger")
         )
 
         """
