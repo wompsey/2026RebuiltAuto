@@ -149,7 +149,7 @@ class FeederIOSim(FeederIO):
         # Update inputs
         inputs.motorConnected = True
         inputs.motorPosition = self._simMotor.getAngularPosition()
-        inputs.motorVelocity = self._simMotor.getAngularVelocity
+        inputs.motorVelocity = self._simMotor.getAngularVelocity()
         inputs.motorAppliedVolts = self._motorAppliedVolts
         inputs.motorCurrent = self._simMotor.getCurrentDraw()
         inputs.motorTemperature = 25.0  # Room temperature
