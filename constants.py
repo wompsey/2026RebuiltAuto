@@ -63,8 +63,9 @@ class Constants:
 
     class FeederConstants:
         GEAR_RATIO = None
-        GAINS = None
+        GAINS: Slot0Configs = None
         SUPPLY_CURRENT = None
+        MOMENT_OF_INERTIA = None
 
     class VisionConstants:
         FRONT = "limelight-fr"
@@ -148,6 +149,7 @@ def _init_hardware_configs():
                 .with_k_a(0.0)
             )
             Constants.FeederConstants.SUPPLY_CURRENT = 30.0  # Amperes
-
+            Constants.FeederConstants.MOMENT_OF_INERTIA = 0.0067
+            
 # Initialize hardware configs at module load time
 _init_hardware_configs()

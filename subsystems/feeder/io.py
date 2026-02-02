@@ -9,6 +9,9 @@ from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
 from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees
+from wpilib.simulation import DCMotorSim
+from wpimath.system.plant import DCMotor
+from wpimath.controller import ProfiledPIDController
 
 from constants import Constants
 from util import tryUntilOk
@@ -122,25 +125,38 @@ class FeederIOSim(FeederIO):
         self._motorVelocity: float = 0.0
         self._motorAppliedVolts: float = 0.0
 
+        self._motorType = DCMotor.krakenX60(1)
+        self._simMotor = DCMotorSim(self._motorType, Constants.FeederConstants.MOMENT_OF_INERTIA, Constants.FeederConstants.GEAR_RATIO, self._motorType)
+
+        self._closedLoop = False
+
+        self._controller = ProfiledPIDController(Constants.FeederConstants.GAINS.k_p,
+                                        Constants.FeederConstants.GAINS.k_i,
+                                        Constants.FeederConstants.GAINS.k_d)
+
     def updateInputs(self, inputs: FeederIO.FeederIOInputs) -> None:
         """Update inputs with simulated state."""
-        # Simulate motor behavior (simple integration)
-        # In a real simulation, you'd use a physics model here
-        dt = 0.02  # 20ms periodic
-        self._motorPosition += self._motorVelocity * dt
+
+        self._simMotor.update(0.02)
+        if (self._closedLoop):
+            self._motorAppliedVolts = self._controller.calculate(self._simMotor.getAngularPosition())
+        else:
+            self._controller.reset(self._simMotor.getAngularPosition(), self._simMotor.getAngularAcceleration())
+
+        self.setMotorVoltage(self._motorAppliedVolts)
+        
 
         # Update inputs
         inputs.motorConnected = True
-        inputs.motorPosition = self._motorPosition
-        inputs.motorVelocity = self._motorVelocity
+        inputs.motorPosition = self._simMotor.getAngularPosition()
+        inputs.motorVelocity = self._simMotor.getAngularVelocity
         inputs.motorAppliedVolts = self._motorAppliedVolts
-        inputs.motorCurrent = abs(self._motorAppliedVolts / 12.0) * 40.0  # Rough current estimate
+        inputs.motorCurrent = self._simMotor.getCurrentDraw()
         inputs.motorTemperature = 25.0  # Room temperature
 
 
     def setMotorVoltage(self, voltage: volts) -> None:
         """Set the motor output voltage (simulated)."""
         self._motorAppliedVolts = max(-12.0, min(12.0, voltage))
-        # Simple velocity model: voltage -> velocity (with some damping)
-        self._motorVelocity = self._motorAppliedVolts * 10.0  # Adjust multiplier as needed
+        self._motorVelocity = self._motorAppliedVolts * 10.0
 
