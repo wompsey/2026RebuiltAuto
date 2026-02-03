@@ -1,11 +1,9 @@
-from enum import auto, Enum
+import importlib.util
+import sys
+from pathlib import Path
 
-from commands2 import Command, cmd
-from phoenix6 import utils
-from phoenix6.configs import CANrangeConfiguration, TalonFXConfiguration, MotorOutputConfigs, FeedbackConfigs, HardwareLimitSwitchConfigs, ProximityParamsConfigs, CurrentLimitsConfigs
-from phoenix6.controls import DutyCycleOut
-from phoenix6.hardware import TalonFX, CANrange
-from phoenix6.signals import NeutralModeValue, ForwardLimitValue, ForwardLimitSourceValue
+from subsystems.feeder.io import FeederIO, FeederIOTalonFX, FeederIOSim
+from enum import auto, Enum
 
 from pykit.autolog import autologgable_output
 from pykit.logger import Logger
@@ -13,8 +11,8 @@ from wpilib import Alert
 from typing import Final
 from constants import Constants
 from subsystems import StateSubsystem
-from subsystems.feeder.io import FeederIO
 
+__all__ = ["FeederIO", "FeederIOTalonFX", "FeederIOSim", "FeederSubsystem"]
 
 class FeederSubsystem(StateSubsystem):
     """

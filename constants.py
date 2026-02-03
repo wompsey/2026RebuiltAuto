@@ -32,7 +32,7 @@ class Constants:
         #All motors are Kraken X60 unless otherwise specified
         CLIMB_TALON = 10
         INTAKE_TALON = 11
-        KICKER_TALON = 12
+        FEEDER_TALON = 12
         TURRET_TALON = 13
         HOOD_TALON = 14 # Kraken X44
         LAUNCHER_LEFT_TALON = 15 # Kraken X44
@@ -141,7 +141,7 @@ def _init_hardware_configs():
             # Feeder
             Constants.FeederConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.FeederConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.1)
+                .with_k_p(5)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
                 .with_k_s(0.0)

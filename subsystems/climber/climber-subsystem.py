@@ -38,7 +38,7 @@ class ClimberSubsystem(StateSubsystem):
 
         :param io: The climber IO implementation (ClimberIOTalonFX for real hardware, ClimberIOSim for simulation)
         """
-        super().__init__("Climber", self.SubsystemState.S)
+        super().__init__("Climber", self.SubsystemState.STOW)
         
         self._io: Final[ClimberIO] = io
         self._inputs = ClimberIO.ClimberIOInputs()

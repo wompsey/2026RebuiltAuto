@@ -25,6 +25,8 @@ from subsystems.intake import IntakeSubsystem
 from subsystems.superstructure import Superstructure
 from subsystems.swerve import SwerveSubsystem
 from subsystems.vision import VisionSubsystem
+from subsystems.feeder import FeederSubsystem
+from subsystems.feeder import FeederIOSim, FeederIOTalonFX
 
 
 class RobotContainer:
@@ -45,6 +47,7 @@ class RobotContainer:
         self.intake: Optional[IntakeSubsystem] = None
         self.drivetrain: Optional[SwerveSubsystem] = None
         self.vision: Optional[VisionSubsystem] = None
+        self.feeder: Optional[FeederSubsystem] = None
         match Constants.currentMode:
             case Constants.Mode.REAL:
                 # Real robot, instantiate hardware IO implementations
@@ -85,6 +88,13 @@ class RobotContainer:
                 else:
                     print("Climber subsystem not available on this robot")
 
+                if has_subsystem("feeder"):
+                    feeder_io = FeederIOTalonFX(Constants.CanIDs.FEEDER_TALON)
+                    self.feeder = FeederSubsystem(feeder_io)
+                    print("Feeder, Present")
+                else:
+                    print("Feeder subsystem not available on this robot")
+
             case Constants.Mode.SIM:
                 # Sim robot, instantiate physics sim IO implementations (if available)
                 self.drivetrain = TunerConstants.create_drivetrain()
@@ -101,6 +111,12 @@ class RobotContainer:
                     print("Climber, Present")
                 else:
                     print("Climber subsystem not available on this robot")
+
+                if has_subsystem("feeder"):
+                    self.feeder = FeederSubsystem(FeederIOSim())
+                    print("Feeder, Present")
+                else:
+                    print("Feeder subsystem not available on this robot")
 
         self.superstructure = Superstructure(
             self.drivetrain, self.vision, self.climber, self.intake
@@ -211,12 +227,14 @@ class RobotContainer:
 
         self._driver_controller.start().onTrue(self.drivetrain.runOnce(lambda: self.drivetrain.seed_field_centric()))
 
+        self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
+
         goal_bindings = {
             self._function_controller.y(): self.superstructure.Goal.SCORE,
             self._function_controller.x(): self.superstructure.Goal.PASSDEPOT,
             self._function_controller.b(): self.superstructure.Goal.PASSOUTPOST,
             self._function_controller.a(): self.superstructure.Goal.DEFAULT,
-            self._function_controller.leftBumper(): self.superstructure.Goal.CLIMBREADY,
+            #self._function_controller.leftBumper(): self.superstructure.Goal.CLIMBREADY,
             self._function_controller.rightBumper(): self.superstructure.Goal.CLIMB,
         }
 
