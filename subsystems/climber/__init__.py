@@ -5,31 +5,14 @@ from pathlib import Path
 from enum import auto, Enum
 from typing import Final
 
-from commands2 import Command, cmd
-from phoenix6 import utils
-from phoenix6.configs import CANrangeConfiguration, TalonFXConfiguration, MotorOutputConfigs, FeedbackConfigs, HardwareLimitSwitchConfigs, ProximityParamsConfigs, CurrentLimitsConfigs
-from phoenix6.controls import DutyCycleOut
-from phoenix6.hardware import TalonFX, CANrange
-from phoenix6.signals import NeutralModeValue, ForwardLimitValue, ForwardLimitSourceValue
-
 from pykit.autolog import autologgable_output
 from pykit.logger import Logger
 from wpilib import Alert
-from wpimath.geometry import Pose3d, Rotation3d
-from wpimath.units import rotationsToRadians
 
 from constants import Constants
 from subsystems import StateSubsystem
 
 from subsystems.climber.io import ClimberIO, ClimberIOTalonFX, ClimberIOSim
-
-# Import ClimberSubsystem from hyphenated filename
-_climber_subsystem_path = Path(__file__).parent / "climber-subsystem.py"
-spec = importlib.util.spec_from_file_location("climber_subsystem", _climber_subsystem_path)
-_climber_subsystem_module = importlib.util.module_from_spec(spec)
-sys.modules["climber_subsystem"] = _climber_subsystem_module
-spec.loader.exec_module(_climber_subsystem_module)
-ClimberSubsystem = _climber_subsystem_module.ClimberSubsystem
 
 __all__ = ["ClimberIO", "ClimberIOTalonFX", "ClimberIOSim", "ClimberSubsystem"]
 

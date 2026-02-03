@@ -6,11 +6,10 @@ from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
 from phoenix6.controls import VoltageOut
 from phoenix6.hardware import TalonFX
-from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
 from wpilib.simulation import DCMotorSim
 from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, degrees, rotationsToRadians
+from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians
 from wpimath.controller import ProfiledPIDController
 
 from constants import Constants
