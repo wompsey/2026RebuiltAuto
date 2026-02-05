@@ -1,5 +1,5 @@
 from abc import ABC
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Final
 
 from phoenix6 import BaseStatusSignal
@@ -10,7 +10,7 @@ from pykit.autolog import autolog
 from wpilib.simulation import DCMotorSim
 from wpimath.system.plant import DCMotor, LinearSystemId
 from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians
-from wpimath.controller import ProfiledPIDController, PIDController
+from wpimath.controller import PIDController
 
 from constants import Constants
 from util import tryUntilOk
@@ -52,7 +52,6 @@ class ClimberIOTalonFX(ClimberIO):
         Initialize the real hardware IO.
 
         :param motor_id: CAN ID of the TalonFX motor
-        :param servo_port: PWM port of the Servo
         :param motor_config: TalonFX configuration to apply
         """
         self._motor: Final[TalonFX] = TalonFX(motor_id, "*")
@@ -107,7 +106,7 @@ class ClimberIOTalonFX(ClimberIO):
         self._motor.set_control(self._voltage_request)
 
     def get_position(self) -> float:
-        return self._motor.get_position()
+        return self._motor.get_position().value
 
 
 class ClimberIOSim(ClimberIO):
