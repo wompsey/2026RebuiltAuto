@@ -1,13 +1,6 @@
 from enum import auto, Enum
-
-from commands2 import Command, cmd, PIDSubsystem
-from phoenix6 import utils
-from phoenix6.configs import CANrangeConfiguration, TalonFXConfiguration, MotorOutputConfigs, FeedbackConfigs, HardwareLimitSwitchConfigs, ProximityParamsConfigs, CurrentLimitsConfigs
 from phoenix6.controls import PositionVoltage
-from phoenix6.hardware import TalonFX, CANrange
-from phoenix6.signals import NeutralModeValue, ForwardLimitValue, ForwardLimitSourceValue
-
-from pykit.autolog import autologgable_output
+from phoenix6.hardware import TalonFX
 from pykit.logger import Logger
 from wpilib import Alert
 from typing import Final, Callable
@@ -16,8 +9,6 @@ from subsystems import Subsystem
 from subsystems.turret.io import TurretIO
 from math import *
 from wpimath.geometry import Pose2d, Rotation2d
-from wpimath.controller import PIDController
-from wpimath.units import radiansToRotations
 from wpilib import DriverStation
 
 class TurretSubsystem(Subsystem):

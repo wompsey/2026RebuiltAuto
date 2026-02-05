@@ -8,10 +8,8 @@ from phoenix6.controls import PositionVoltage
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, InvertedValue
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, radiansToRotations, volts, amperes, celsius, rotationsToRadians
-from wpilib.simulation import DCMotorSim
+from wpimath.units import radians, radians_per_second, radiansToRotations, volts, amperes, celsius
 from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.geometry import Rotation2d
 from wpimath.controller import PIDController
 
 from constants import Constants
