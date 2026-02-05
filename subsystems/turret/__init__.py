@@ -1,6 +1,4 @@
 from enum import auto, Enum
-from phoenix6.controls import PositionVoltage
-from phoenix6.hardware import TalonFX
 from pykit.logger import Logger
 from wpilib import Alert
 from typing import Final, Callable
@@ -24,15 +22,11 @@ class TurretSubsystem(Subsystem):
     def __init__(self, io: TurretIO, robot_pose_supplier: Callable[[], Pose2d]) -> None:
         super().__init__() # Change PID controller and Initial position if needed
 
-        self._turret_motor = TalonFX(Constants.CanIDs.TURRET_TALON)
-
         self._io: Final[TurretIO] = io
         self._inputs = TurretIO.TurretIOInputs()
         self.robot_pose_supplier = robot_pose_supplier
 
         self.turret_disconnected_alert = Alert("Turret motor is disconnected.", Alert.AlertType.kError)
-
-        self.position_request = PositionVoltage(0)
 
         self.independent_rotation = Rotation2d(0)
         self.current_radians = 0.0
