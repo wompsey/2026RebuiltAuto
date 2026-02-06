@@ -104,17 +104,6 @@ class Constants:
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
         HUB_HEIGHT = 1.3860018  # hub height - initial height of shooter (17.433 inches) (in meters)    class TurretConstants:
-        GAINS = (Slot0Configs()
-                .with_k_p(1.0)
-                .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
-                .with_k_a(0.0)
-            )
-        GEAR_RATIO = 170/36
-        SUPPLY_CURRENT = 40
-        MOI = .455
 
     class GoalLocations:
         BLUE_HUB = Pose2d(4.625594, 4.034536, 0)
