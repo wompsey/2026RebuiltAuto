@@ -13,7 +13,8 @@ from wpilib import Alert
 from wpimath.geometry import Pose2d
 
 from constants import Constants
-from subsystems.vision.io import CameraObservation, VisionIO, VisionObservation, ObservationType, VisionIOLimelight
+from subsystems.vision.io import (CameraObservation, VisionIO, VisionObservation,
+                                  ObservationType, VisionIOLimelight)
 
 
 # pylint: disable=too-few-public-methods
@@ -31,31 +32,28 @@ class VisionSubsystem(Subsystem):
         self.io = ios
 
         # Initialize inputs
-        self.inputs: list[VisionIO.VisionIOInputs] = []
-        for _ in self.io:
-            self.inputs.append(VisionIO.VisionIOInputs())
+        self.inputs = tuple(VisionIO.VisionIOInputs() for _ in ios)
 
         # Initialize disconnected alerts
-        self.disconnected_alerts: list[Alert] = []
-        for cam_io in self.io:
-            self.disconnected_alerts.append(
-                Alert(f"Camera {cam_io.VisionIOInputs.name} is disconnected.",
-                    Alert.AlertType.kWarning)
-            )
+        self.disconnected_alerts = tuple(
+            Alert(f"Camera {io.get_name()} is disconnected.", Alert.AlertType.kWarning)
+            for io in ios
+        )
 
     # pylint: disable=too-many-locals
     def periodic(self) -> None:
         """Log and send all observations."""
-        for idx, (i, inp) in enumerate(zip(self.io, self.inputs)):
-            i.update_inputs(inp)
+        for idx, (cam, inp) in enumerate(zip(self.io, self.inputs)):
+            cam.update_inputs(inp)
             Logger.processInputs(f"Vision/{inp.name}", self.inputs[idx])
+            self.disconnected_alerts[idx].set(not inp.connected)
 
         all_tag_poses = []
         all_robot_poses = []
         all_robot_poses_accepted = []
         all_robot_poses_rejected = []
 
-        for i, camera in enumerate(self.inputs):
+        for cam, camera in enumerate(self.inputs):
             tag_poses = []
             robot_poses = []
             robot_poses_accepted = []
@@ -101,7 +99,7 @@ class VisionSubsystem(Subsystem):
                 self.consumer(
                     observation.pose.toPose2d(),
                     observation.timestamp,
-                    [linear_std, linear_std, angular_std]
+                    (linear_std, linear_std, angular_std)
                 )
 
             Logger.recordOutput(f"Vision/{camera.name}/TagPoses", tag_poses)
@@ -119,6 +117,10 @@ class VisionSubsystem(Subsystem):
         Logger.recordOutput("Vision/AllRobotPosesRejected", all_robot_poses_rejected)
 
     def set_throttle(self, throttle: int):
+        """
+        Sets the throttle for all Limelights.
+        This is to prevent overheating.
+        """
         for cam in self.io:
             if isinstance(cam, VisionIOLimelight):
                 cam.set_throttle(throttle)

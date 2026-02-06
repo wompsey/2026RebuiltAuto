@@ -47,7 +47,7 @@ class VisionObservation:
     """
     pose: Pose2d
     timestamp: float
-    std: list[float]
+    std: tuple[float]
 
 
 # pylint: disable=too-few-public-methods
@@ -67,6 +67,10 @@ class VisionIO(ABC):
     @abstractmethod
     def update_inputs(self, inputs: VisionIOInputs) -> None:
         """Update subsystem inputs."""
+
+    @abstractmethod
+    def get_name(self) -> str:
+        """Returns the name of the camera."""
 
 
 # pylint: disable=too-many-instance-attributes
@@ -177,6 +181,9 @@ class VisionIOLimelight(VisionIO):
     def set_throttle(self, throttle: int) -> None:
         """Set the throttle."""
         self.throttle_set.set(throttle)
+
+    def get_name(self) -> str:
+        return self.name
 
     @staticmethod
     def parse_pose(raw_ll_array: list[float]) -> Pose3d:
