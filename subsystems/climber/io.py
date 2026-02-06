@@ -27,18 +27,18 @@ class ClimberIO(ABC):
     class ClimberIOInputs:
         """Inputs from the climber hardware/simulation."""
         # Motor status
-        motorConnected: bool = False
-        motorPosition: radians = 0.0
-        motorVelocity: radians_per_second = 0.0
-        motorAppliedVolts: volts = 0.0
-        motorCurrent: amperes = 0.0
-        motorTemperature: celsius = 0.0
+        motor_connected: bool = False
+        motor_position: radians = 0.0
+        motor_velocity: radians_per_second = 0.0
+        motor_applied_volts: volts = 0.0
+        motor_current: amperes = 0.0
+        motor_temperature: celsius = 0.0
 
-    def updateInputs(self, inputs: ClimberIOInputs) -> None:
+    def update_inputs(self, inputs: ClimberIOInputs) -> None:
         """Update the inputs with current hardware/simulation state."""
         pass
 
-    def setMotorVoltage(self, voltage: volts) -> None:
+    def set_motor_voltage(self, voltage: volts) -> None:
         """Set the motor output voltage."""
         pass
 
@@ -93,12 +93,12 @@ class ClimberIOTalonFX(ClimberIO):
         )
 
         # Update motor inputs
-        inputs.motorConnected = motorStatus.is_ok()
-        inputs.motorPosition = self._position.value_as_double
-        inputs.motorVelocity = self._velocity.value_as_double
-        inputs.motorAppliedVolts = self._appliedVolts.value_as_double
-        inputs.motorCurrent = self._current.value_as_double
-        inputs.motorTemperature = self._temperature.value_as_double
+        inputs.motor_connected = motorStatus.is_ok()
+        inputs.motor_position = self._position.value_as_double
+        inputs.motor_velocity = self._velocity.value_as_double
+        inputs.motor_applied_volts = self._appliedVolts.value_as_double
+        inputs.motor_current = self._current.value_as_double
+        inputs.motor_temperature = self._temperature.value_as_double
 
     def setMotorVoltage(self, voltage: volts) -> None:
         """Set the motor output voltage."""
@@ -123,10 +123,10 @@ class ClimberIOSim(ClimberIO):
         self._motor_type = DCMotor.krakenX60FOC(1)
         self._climber_sim = DCMotorSim(
             LinearSystemId.DCMotorSystem(
-                self._motor_type, 
-                Constants.ClimberConstants.MOMENT_OF_INERTIA, 
+                self._motor_type,
+                Constants.ClimberConstants.MOMENT_OF_INERTIA,
                 Constants.ClimberConstants.GEAR_RATIO
-            ), 
+            ),
             self._motor_type
         )
 
@@ -142,7 +142,7 @@ class ClimberIOSim(ClimberIO):
         # Simulate motor behavior (simple integration)
         # In a real simulation, you'd use a physics model here
 
-        if (self._closed_loop):
+        if self._closed_loop:
             self._motor_applied_volts = self._controller.calculate(self._climber_sim.getAngularPosition())
         else:
             self._controller.reset()
@@ -151,18 +151,18 @@ class ClimberIOSim(ClimberIO):
         self._climber_sim.update(0.02)  # 20ms periodic
 
         # Update inputs
-        inputs.motorConnected = True
-        inputs.motorPosition = self._climber_sim.getAngularPosition()
-        inputs.motorVelocity = self._climber_sim.getAngularAcceleration()
-        inputs.motorAppliedVolts = self._motor_applied_volts
-        inputs.motorCurrent = abs(self._climber_sim.getCurrentDraw())  # Rough current estimate
-        inputs.motorTemperature = 25.0  # Room temperature
+        inputs.motor_connected = True
+        inputs.motor_position = self._climber_sim.getAngularPosition()
+        inputs.motor_velocity = self._climber_sim.getAngularAcceleration()
+        inputs.motor_applied_volts = self._motor_applied_volts
+        inputs.motor_current = abs(self._climber_sim.getCurrentDraw())  # Rough current estimate
+        inputs.motor_temperature = 25.0  # Room temperature
 
-    def setOpenLoop(self, output):
+    def set_open_loop(self, output):
         self._closed_loop = False
         self._motor_applied_volts = output
 
-    def setPosition(self, position):
+    def set_position(self, position):
         self._closed_loop = True
         self._controller.getSetpoint(rotationsToRadians(position))
 
