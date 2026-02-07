@@ -81,7 +81,7 @@ class ClimberIOTalonFX(ClimberIO):
         )
         self._motor.optimize_bus_utilization()
 
-        self._position_request: PositionVoltage(0)
+        self._position_request = PositionVoltage(0)
 
     def update_inputs(self, inputs: ClimberIO.ClimberIOInputs) -> None:
         """Update inputs with current motor and servo state."""
@@ -104,7 +104,7 @@ class ClimberIOTalonFX(ClimberIO):
 
     def set_position(self, radians: float) -> None:
         """Set the motor position."""
-        self._position_request = PositionVoltage(radiansToRotations(radians))
+        self._position_request.position = PositionVoltage(radiansToRotations(radians))
         self._motor.set_control(self._position_request)
 
 class ClimberIOSim(ClimberIO):
