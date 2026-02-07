@@ -19,8 +19,8 @@ class IntakeSubsystem(StateSubsystem):
 
     _state_configs: dict[SubsystemState, float] = {
         SubsystemState.STOP: 0.0,
-        SubsystemState.INTAKE: 7.0,
-        SubsystemState.OUTPUT: -7.0,
+        SubsystemState.INTAKE: 3.0,
+        SubsystemState.OUTPUT: -3.0,
     }
 
     def __init__(self, io: IntakeIO) -> None:
