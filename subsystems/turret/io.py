@@ -8,10 +8,9 @@ from phoenix6.controls import PositionVoltage
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, InvertedValue
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians
-from wpilib.simulation import DCMotorSim
+from wpimath.units import radians, radians_per_second, radiansToRotations, volts, amperes, celsius
 from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.geometry import Rotation2d
+from wpilib.simulation import DCMotorSim
 from wpimath.controller import PIDController
 
 from constants import Constants
@@ -42,8 +41,12 @@ class TurretIO(ABC):
         """Update the inputs with current hardware/simulation state."""
         pass
 
-    def set_position(self, rotation: Rotation2d) -> None:
-        """Set the motor output voltage."""
+    def set_position(self, radians: float) -> None:
+        """
+        Set the turret position in radians.
+        Args:
+            radians: The position in radians to set the turret to.
+        """
         pass
 
 
@@ -105,9 +108,13 @@ class TurretIOTalonFX(TurretIO):
         inputs.turret_temperature = self.temperature.value_as_double
         inputs.turret_setpoint = self.setpoint.value_as_double
 
-    def set_position(self, rotation: Rotation2d) -> None:
-        """Set the position."""
-        self.position_request = PositionVoltage(rotation.r)
+    def set_position(self, radians: float) -> None:
+        """
+        Set the turret position in radians using closed loop control.
+        Args:
+            radians: The position in radians to set the turret to.
+        """
+        self.position_request = PositionVoltage(radiansToRotations(radians))
         self.turret_motor.set_control(self.position_request)
 
 
@@ -126,7 +133,7 @@ class TurretIOSim(TurretIO):
 
         self._motorPosition: float = 0.0
         self._motorVelocity: float = 0.0
-        self.appliedVolts: float = 0.0
+        self.applied_volts: float = 0.0
 
         self.controller = PIDController(
             Constants.TurretConstants.GAINS.k_p,
@@ -138,26 +145,32 @@ class TurretIOSim(TurretIO):
         """Update inputs with simulated state."""
 
         if self.closed_loop:
-            self.appliedVolts = self.controller.calculate(self.turretSim.getAngularPosition())
+            self.applied_volts = self.controller.calculate(self.turretSim.getAngularPosition())
         else:
             self.controller.reset()
 
+        self.turretSim.setInputVoltage(max(-12.0, min(self.applied_volts, 12.0)))
         self.turretSim.update(.02)
 
         inputs.turret_connected = True
         inputs.turret_position = self.turretSim.getAngularPosition()
         inputs.turret_velocity = self.turretSim.getAngularAcceleration()
-        inputs.turret_applied_volts = self._motorAppliedVolts
+        inputs.turret_applied_volts = self.applied_volts
         inputs.turret_current = abs(self.turretSim.getCurrentDraw())
         inputs.turret_temperature = 25.0  # Room temperature
 
 
     def set_open_loop(self, output):
         self.closed_loop = False
-        self.appliedVolts = output
+        self.applied_volts = output
 
-    def set_position(self, position: Rotation2d):
+    def set_position(self, radians: float):
+        """
+        Set the turret position in radians.
+        Args:
+            radians: The position in radians to set the turret to.
+        """
         self.closed_loop = True
-        self.controller.setSetpoint(position.radians())
+        self.controller.setSetpoint(radians)
 
     
