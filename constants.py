@@ -43,6 +43,10 @@ class Constants:
         TURRET_CANCODER = 17
         HOOD_CANCODER = 18
 
+        # Power Distribution (REV PDH or CTRE PDP). Set to None if no PDH/PDP on CAN bus
+        # to avoid "CAN: Message not found: Module N" errors from pykit logging.
+        POWER_DISTRIBUTION_MODULE_ID: Final[int | None] = None
+
     class GeneralConstants:
         GAME_PIECE_WEIGHT = 0.215
 

@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Callable, Optional
 
 import commands2
 import commands2.button
@@ -19,6 +19,7 @@ from constants import Constants
 from generated.larry.tuner_constants import TunerConstants as LarryTunerConstants
 from generated.tuner_constants import TunerConstants
 from robot_config import currentRobot, has_subsystem, Robot  # Robot detection (Larry vs Comp)
+from tuning import MotorPIDTuner
 from subsystems.climber import ClimberSubsystem
 from subsystems.climber.io import ClimberIOTalonFX, ClimberIOSim
 from subsystems.intake import IntakeSubsystem, IntakeIO, IntakeIOSim, IntakeIOTalonFX
@@ -176,6 +177,8 @@ class RobotContainer:
             self.drivetrain, self.vision, self.climber, self.intake
         )
 
+        self._motor_pid_tuner = self._build_motor_pid_tuner()
+
         self._setup_swerve_requests()
         self._pathplanner_setup()
         self._setup_controller_bindings()
@@ -186,6 +189,18 @@ class RobotContainer:
             if AutoBuilder.shouldFlip():
                 pose = FlippingUtil.flipFieldPose(pose)
             self.drivetrain.reset_pose(pose)
+
+    def _build_motor_pid_tuner(self) -> MotorPIDTuner:
+        """Build list of (name, get_motor) for subsystems with TalonFX (real only)."""
+        motors: list[tuple[str, Callable[[], Optional["TalonFX"]]]] = []
+        if Constants.currentMode == Constants.Mode.REAL:
+            if hasattr(self, "hood") and self.hood is not None and hasattr(self.hood.io, "hood_motor"):
+                motors.append(("Hood", lambda: self.hood.io.hood_motor))
+            if self.turret is not None and hasattr(self.turret.io, "turret_motor"):
+                motors.append(("Turret", lambda: self.turret.io.turret_motor))
+            if self.climber is not None and hasattr(self.climber.io, "_motor"):
+                motors.append(("Climber", lambda: self.climber.io._motor))
+        return MotorPIDTuner(motors)
 
     def _pathplanner_setup(self):
         # Register NamedCommands

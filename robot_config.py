@@ -102,6 +102,8 @@ def has_subsystem(subsystem_name: str) -> bool:
     LARRY_SUBSYSTEMS = {
         "drivetrain",  # Always present
         "vision",      # Always present
+        "hood",
+        "turret",
         # Add subsystems that Larry has:
         # "climber",
         # "intake",
