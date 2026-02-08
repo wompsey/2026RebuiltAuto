@@ -166,11 +166,11 @@ def _init_hardware_configs():
             # Intake
             Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.IntakeConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.7)
+                .with_k_p(0.3)
                 .with_k_i(0.0)
-                .with_k_d(0.0)
+                .with_k_d(0.006)
                 .with_k_s(0.9)
-                .with_k_v(0.1)
+                .with_k_v(0.07)
                 .with_k_a(0.0)
             )
             Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes

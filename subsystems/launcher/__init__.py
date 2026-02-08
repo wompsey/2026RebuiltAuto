@@ -15,6 +15,21 @@ from constants import Constants
 LauncherConstants = Constants.LauncherConstants
 GeneralConstants = Constants.GeneralConstants
 
+def velocityToWheelRPS(velocity: float) -> float:
+    """Converts m/s to rotations per second for the flywheel, accounting for inertia."""
+        
+    effective_rotational_inertia = 7 * GeneralConstants.GAME_PIECE_WEIGHT * (LauncherConstants.FLYWHEEL_RADIUS ** 2)
+
+    speed_transfer_percentage = (
+        (20 * LauncherConstants.MOMENT_OF_INERTIA)
+        /
+        (effective_rotational_inertia + (40 * LauncherConstants.MOMENT_OF_INERTIA))
+    )
+
+    rpm = (velocity) / (LauncherConstants.FLYWHEEL_RADIUS * speed_transfer_percentage)
+        
+    return rpm/(2*pi)
+
 class LauncherSubsystem(StateSubsystem):
     """
     The LauncherSubsystem is responsible for controlling the end effector's compliant wheels.
@@ -27,9 +42,9 @@ class LauncherSubsystem(StateSubsystem):
         
     _state_configs: dict[SubsystemState, float] = {
         # Meters per second
-        SubsystemState.IDLE: 5.0,
-        SubsystemState.SCORE: 12.26,
-        SubsystemState.PASS: 10.0,
+        SubsystemState.IDLE: velocityToWheelRPS(5.0),
+        SubsystemState.SCORE: velocityToWheelRPS(12.26),
+        SubsystemState.PASS: velocityToWheelRPS(10.0),
     }
 
     def __init__(self, io: LauncherIO, robot_pose_supplier: Callable[[], Pose2d]) -> None:
@@ -87,20 +102,4 @@ class LauncherSubsystem(StateSubsystem):
 
     def find_position(self) -> float:
         return self._robot_pose_supplier().X
-    
-    @staticmethod
-    def velocityToWheelRPS(velocity: float) -> float:
-        """Converts m/s to rotations per second for the flywheel, accounting for inertia."""
-        
-        effective_rotational_inertia = 7 * GeneralConstants.GAME_PIECE_WEIGHT * (LauncherConstants.FLYWHEEL_RADIUS ** 2)
-
-        speed_transfer_percentage = (
-            (20 * LauncherConstants.MOMENT_OF_INERTIA)
-            /
-            (effective_rotational_inertia + (40 * LauncherConstants.MOMENT_OF_INERTIA))
-        )
-
-        rpm = (velocity) / (LauncherConstants.FLYWHEEL_RADIUS * speed_transfer_percentage)
-        
-        return rpm/(2*pi)
 
