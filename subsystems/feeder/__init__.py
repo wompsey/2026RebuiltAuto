@@ -25,7 +25,7 @@ class FeederSubsystem(StateSubsystem):
 
     _state_configs: dict[SubsystemState, float] = {
         SubsystemState.STOP: 0.0,
-        SubsystemState.INWARD: 4.0,
+        SubsystemState.INWARD: 40.0,
     }
 
     def __init__(self, io: FeederIO) -> None:

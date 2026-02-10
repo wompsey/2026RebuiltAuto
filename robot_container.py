@@ -260,15 +260,9 @@ class RobotContainer:
 
         if self.intake is not None:
             self._driver_controller.rightBumper().whileTrue(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.OUTPUT)
-            ).onFalse(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE)
-            )
-            self._driver_controller.b().whileTrue(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.STOP)
-            ).onFalse(
-                self.intake.set_desired_state_command(self.intake.SubsystemState.INTAKE)
-            )
+                InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.INTAKE))).onFalse(
+                    InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.STOP)))
+
         else:
             print("Intake subsystem not available on this robot, unable to bind intake buttons")
 
@@ -283,9 +277,11 @@ class RobotContainer:
             self.drivetrain.runOnce(
                 lambda: self.drivetrain.seed_field_centric()))
 
-        self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
+        if self.feeder is not None:
+            self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
+        else:
+            print("Feeder subsystem not available on this robot, unable to bind feeder buttons")
         #self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
-        self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.INTAKE))).onFalse(InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.STOP)))
 
         goal_bindings = {
             self._function_controller.y(): self.superstructure.Goal.SCORE,

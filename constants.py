@@ -65,6 +65,7 @@ class Constants:
         GAINS = None
         SUPPLY_CURRENT = None
         MOMENT_OF_INERTIA = None
+        FEED_FORWARD = None
 
     class LauncherConstants:
         GEAR_RATIO = None
@@ -79,6 +80,7 @@ class Constants:
         GAINS: Slot0Configs = None
         SUPPLY_CURRENT = None
         MOMENT_OF_INERTIA = None
+        FEED_FORWARD = None
 
     class VisionConstants:
         FRONT = "limelight-front"
@@ -169,15 +171,16 @@ def _init_hardware_configs():
             # Intake
             Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.IntakeConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.3)
+                .with_k_p(0.45)
                 .with_k_i(0.0)
-                .with_k_d(0.006)
-                .with_k_s(0.9)
-                .with_k_v(0.07)
+                .with_k_d(0.003)
+                .with_k_s(0.0)
+                .with_k_v(0.0)
                 .with_k_a(0.0)
             )
             Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.IntakeConstants.MOMENT_OF_INERTIA = 0.0067
+            Constants.IntakeConstants.FEED_FORWARD = 1.1
 
             # Launcher
             Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio
@@ -196,15 +199,16 @@ def _init_hardware_configs():
             # Feeder
             Constants.FeederConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
             Constants.FeederConstants.GAINS = (Slot0Configs()
-                .with_k_p(.2)
+                .with_k_p(0.3)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
-                .with_k_s(0.3)
-                .with_k_v(0.127)
+                .with_k_s(0.0)
+                .with_k_v(0.0)
                 .with_k_a(0.0)
             )
             Constants.FeederConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.FeederConstants.MOMENT_OF_INERTIA = 0.0067
+            Constants.FeederConstants.FEED_FORWARD = 3.0
             
 # Initialize hardware configs at module load time
 _init_hardware_configs()
