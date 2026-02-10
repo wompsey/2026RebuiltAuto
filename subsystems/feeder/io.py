@@ -4,7 +4,7 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import VelocityVoltage
+from phoenix6.controls import VelocityVoltage, VoltageOut
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
@@ -92,7 +92,9 @@ class FeederIOTalonFX(FeederIO):
         self._motor.optimize_bus_utilization()
 
         # Voltage control request
-        self._voltageRequest: Final[VelocityVoltage] = VelocityVoltage(0)
+        self._velocityRequest: Final[VelocityVoltage] = VelocityVoltage(0)
+        self._velocityRequest.feed_forward = Constants.FeederConstants.FEED_FORWARD
+        self._voltageRequest: Final[VoltageOut] = VoltageOut(0)
 
     def updateInputs(self, inputs: FeederIO.FeederIOInputs) -> None:
         """Update inputs with current motor state."""
@@ -115,8 +117,12 @@ class FeederIOTalonFX(FeederIO):
 
     def setMotorRPS(self, rps: float) -> None:
         """Set the motor output voltage."""
-        self._voltageRequest.velocity = rps
-        self._motor.set_control(self._voltageRequest)
+        if rps == 0:
+            self._motor.set_control(self._voltageRequest)
+        else:
+            self._velocityRequest.velocity = rps
+            self._velocityRequest.feed_forward = Constants.FeederConstants.FEED_FORWARD
+            self._motor.set_control(self._velocityRequest)
 
 
 class FeederIOSim(FeederIO):
@@ -134,7 +140,7 @@ class FeederIOSim(FeederIO):
             Constants.FeederConstants.GEAR_RATIO
         )
         self._simMotor = DCMotorSim(linearSystem, self._motorType, [0, 0])
-        self._closedLoop = False
+        self._closedLoop = True
 
         self._motorPosition: float = 0.0
         self._motorVelocity: float = 0.0

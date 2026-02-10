@@ -102,6 +102,8 @@ def has_subsystem(subsystem_name: str) -> bool:
     LARRY_SUBSYSTEMS = {
         "drivetrain",  # Always present
         "vision",      # Always present
+        #"hood",
+        #"turret",
         # Add subsystems that Larry has:
         # "climber",
         # "intake",
@@ -111,7 +113,7 @@ def has_subsystem(subsystem_name: str) -> bool:
         "drivetrain",  # Always present
         "vision",      # Always present
         "feeder",      # Competition robot has feeder
-        "launcher",    # Competition robot has launcher
+        #"launcher",    # Competition robot has launcher
         "intake",      # Competition robot has intake
         #"climber",     # Competition robot has climber
         # Add other Comp subsystems as needed
