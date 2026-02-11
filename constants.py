@@ -5,7 +5,7 @@ from math import *
 from phoenix6.configs.config_groups import Slot0Configs
 from robotpy_apriltag import AprilTagFieldLayout, AprilTagField
 from wpilib import RobotBase
-from wpimath.geometry import Pose2d
+from wpimath.geometry import Pose2d, Rotation2d
 
 from robot_config import currentRobot, Robot
 
@@ -38,7 +38,7 @@ class Constants:
         HOOD_TALON = 14 # Kraken X44
         LAUNCHER_TOP_TALON = 15 # Kraken X44
         LAUNCHER_LOW_TALON = 16 # Kraken X44
-        
+
         TURRET_CANCODER = 17
         HOOD_CANCODER = 18
 
@@ -98,7 +98,7 @@ class Constants:
         GEAR_RATIO = 170/36
         SUPPLY_CURRENT = 40
         MOI = .455
-        
+
     class HoodConstants:
         GEAR_RATIO = 68/3
         GAINS = (Slot0Configs()
@@ -109,7 +109,10 @@ class Constants:
                 .with_k_v(0.0)
                 .with_k_a(0.0)
         )
-    SUPPLY_CURRENT = 35
+        SUPPLY_CURRENT = 35
+        # positions
+        STOW = Rotation2d(0)
+        PASSING = Rotation2d(0.1)
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
@@ -209,6 +212,6 @@ def _init_hardware_configs():
             Constants.FeederConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.FeederConstants.MOMENT_OF_INERTIA = 0.0067
             Constants.FeederConstants.FEED_FORWARD = 3.0
-            
+
 # Initialize hardware configs at module load time
 _init_hardware_configs()
