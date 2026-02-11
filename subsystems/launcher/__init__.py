@@ -42,7 +42,7 @@ class LauncherSubsystem(StateSubsystem):
         
     _state_configs: dict[SubsystemState, float] = {
         # Meters per second
-        SubsystemState.IDLE: velocityToWheelRPS(5.0),
+        SubsystemState.IDLE: 0, #velocityToWheelRPS(5.0),
         SubsystemState.SCORE: velocityToWheelRPS(12.26),
         SubsystemState.PASS: velocityToWheelRPS(10.0),
     }
@@ -97,7 +97,7 @@ class LauncherSubsystem(StateSubsystem):
 
         self._desired_projectile_velocity = projectile_velocity
         self._desired_motorRPS = velocityToWheelRPS(projectile_velocity)
-        self._desired_motorRPS = max(min(self._desired_motorRPS, 75.0), -75)
+        self._desired_motorRPS = max(min(self._desired_motorRPS, 75.0), -75)  # Ensure non-negative RPS
         self._io.setMotorRPS(self._desired_motorRPS)
 
     def find_position(self) -> float:

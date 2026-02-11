@@ -5,7 +5,7 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import VelocityVoltage, PositionVoltage
+from phoenix6.controls import VelocityVoltage, PositionVoltage, VoltageOut
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue
 from pykit.autolog import autolog
@@ -67,7 +67,6 @@ class IntakeIOTalonFX(IntakeIO):
         _motor_config.feedback.sensor_to_mechanism_ratio = Constants.IntakeConstants.GEAR_RATIO
 
         tryUntilOk(5, lambda: self._motor.configurator.apply(_motor_config, 0.25))
-        tryUntilOk(5, lambda: self._motor.set_position(0, 0.25))
 
         # Create status signals for motor
         self._position: Final = self._motor.get_position()
@@ -87,8 +86,12 @@ class IntakeIOTalonFX(IntakeIO):
         )
         self._motor.optimize_bus_utilization()
 
+        # Velocity Voltage control request
+        self._velocityRequest: Final[VelocityVoltage] = VelocityVoltage(0)
+        self._velocityRequest.feed_forward = Constants.IntakeConstants.FEED_FORWARD
+
         # Voltage control request
-        self._voltageRequest: Final[VelocityVoltage] = VelocityVoltage(0)
+        self._voltageRequest: Final[VoltageOut] = VoltageOut(0)
 
     def updateInputs(self, inputs: IntakeIO.IntakeIOInputs) -> None:
         """Update inputs with current motor state."""
@@ -111,10 +114,13 @@ class IntakeIOTalonFX(IntakeIO):
 
     def setMotorRPS(self, rps: float) -> None:
         """Set the motor output voltage."""
-        self._voltageRequest.velocity = rps
-        self._motor.set_control(self._voltageRequest)
-
-
+        print(f"Intake Setting motor RPS to {rps}")
+        if rps == 0:
+            self._motor.set_control(self._voltageRequest)
+        else:
+            self._velocityRequest.velocity = rps
+            self._velocityRequest.feed_forward = Constants.IntakeConstants.FEED_FORWARD
+            self._motor.set_control(self._velocityRequest)
 
 class IntakeIOSim(IntakeIO):
     """
