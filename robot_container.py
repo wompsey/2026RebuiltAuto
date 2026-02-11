@@ -281,8 +281,11 @@ class RobotContainer:
             self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
         else:
             print("Feeder subsystem not available on this robot, unable to bind feeder buttons")
-        #self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
-
+        if self.launcher is not None:
+            self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
+        else:
+            print("Launcher subsystem not available on this robot, unable to bind launcher buttons")
+        
         goal_bindings = {
             self._function_controller.y(): self.superstructure.Goal.SCORE,
             self._function_controller.x(): self.superstructure.Goal.PASSDEPOT,

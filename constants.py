@@ -73,6 +73,8 @@ class Constants:
         SUPPLY_CURRENT = None
         MOMENT_OF_INERTIA = None
         FLYWHEEL_RADIUS = None
+        FEED_FORWARD = None
+        MAX_RPS = None
 
 
     class FeederConstants:
@@ -185,16 +187,18 @@ def _init_hardware_configs():
             # Launcher
             Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio
             Constants.LauncherConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.175)
+                .with_k_p(0.3)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
-                .with_k_s(0.45)
-                .with_k_v(0.1)
+                .with_k_s(0.0985)
+                .with_k_v(0.0)
                 .with_k_a(0.0)
             )
             Constants.LauncherConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.LauncherConstants.MOMENT_OF_INERTIA =  0.0030700826
             Constants.LauncherConstants.FLYWHEEL_RADIUS = 2.0 * 0.0254
+            #Constants.LauncherConstants.FEED_FORWARD = 4.0
+            Constants.LauncherConstants.MAX_RPS = 75.0
 
             # Feeder
             Constants.FeederConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
