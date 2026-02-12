@@ -132,7 +132,7 @@ class TurretIOTalonFX(TurretIO):
         Args:
             velocity: The velocity in radians per second to set the turret to.
         """
-        self.velocity_request = VelocityVoltage(velocity)
+        self.velocity_request = VelocityVoltage(radiansToRotations(velocity))
         self.turret_motor.set_control(self.velocity_request)
 
 

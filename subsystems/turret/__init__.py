@@ -64,7 +64,6 @@ class TurretSubsystem(Subsystem):
                 xdist = abs(self.robot_pose_supplier().X() - Constants.GoalLocations.BLUE_DEPOT_PASS.X()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().X() - Constants.GoalLocations.RED_DEPOT_PASS.X())
                 ydist = abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.BLUE_DEPOT_PASS.Y()) if DriverStation.getAlliance == DriverStation.Alliance.kBlue else abs(self.robot_pose_supplier().Y() - Constants.GoalLocations.RED_DEPOT_PASS.Y())
             case self.Goal.NONE:
-                print("No turret goal set, returning 0.0")
                 return 0.0
         return atan(ydist / xdist)
 
@@ -75,6 +74,6 @@ class TurretSubsystem(Subsystem):
             target_radians = self.get_radians_to_goal()
             self._io.set_position(target_radians)
 
-    def rotate_manually(self, axis: float):
+    def rotate_manually(self, axis: float): # Axis is the value of the X-axis from a joystick
         target_velocity = axis * Constants.TurretConstants.MAX_MANUAL_VELOCITY
         self._io.set_velocity(target_velocity)

@@ -16,7 +16,7 @@ from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
 from wpimath.system.plant import DCMotor
 from wpimath.system.plant import LinearSystemId
-from wpimath.units import radians, volts, amperes
+from wpimath.units import radians, radiansToRotations, volts, amperes
 
 from constants import Constants
 from util import tryUntilOk
@@ -131,7 +131,7 @@ class HoodIOTalonFX(HoodIO):
 
     def set_velocity(self, velocity: float) -> None:
         """Set the velocity."""
-        self.velocity_request = VelocityVoltage(velocity)
+        self.velocity_request = VelocityVoltage(radiansToRotations(velocity))
         self.hood_motor.set_control(self.velocity_request)
 
 class HoodIOSim(HoodIO):
