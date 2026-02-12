@@ -85,7 +85,6 @@ class RobotContainer:
                     # Note: Constants.CanIDs.CLIMB_TALON is automatically set based on detected robot (Larry vs Comp)
                     climber_io = ClimberIOTalonFX(
                         Constants.CanIDs.CLIMB_TALON,  # Different CAN ID for Larry vs Comp
-                        Constants.ClimberConstants.SERVO_PORT,
                         climber_motor_config
                     )
 
@@ -145,13 +144,8 @@ class RobotContainer:
 
                 self.turret = TurretSubsystem(TurretIOSim(), lambda: self.drivetrain.get_state().pose)
 
-                # Create climber only if it exists on this robot
-                if has_subsystem("climber"):
-                    # Create climber subsystem with simulation IO
-                    self.climber = ClimberSubsystem(ClimberIOSim())
-                    print("Climber, Present")
-                else:
-                    print("Climber subsystem not available on this robot")
+                self.climber = ClimberSubsystem(ClimberIOSim())
+                print("Climber, Present")
 
                 if has_subsystem("feeder"):
                     self.feeder = FeederSubsystem(FeederIOSim())
@@ -281,8 +275,11 @@ class RobotContainer:
             self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
         else:
             print("Feeder subsystem not available on this robot, unable to bind feeder buttons")
-        #self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
-
+        if self.launcher is not None:
+            self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
+        else:
+            print("Launcher subsystem not available on this robot, unable to bind launcher buttons")
+        
         goal_bindings = {
             self._function_controller.y(): self.superstructure.Goal.SCORE,
             self._function_controller.x(): self.superstructure.Goal.PASSDEPOT,
@@ -309,6 +306,13 @@ class RobotContainer:
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
                 self.hood.runOnce(lambda: self.hood.rotate_manually(self._function_controller.getRightY()))
             )
+        self._function_controller.povUp().onTrue(
+            self.climber.set_desired_state_command(self.climber.SubsystemState.EXTEND)
+        )
+
+        self._function_controller.povDown().onTrue(
+            self.climber.set_desired_state_command(self.climber.SubsystemState.STOW)
+        )
 
     def get_autonomous_command(self) -> commands2.Command:
         return self._auto_chooser.getSelected()
