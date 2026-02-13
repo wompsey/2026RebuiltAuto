@@ -116,12 +116,6 @@ class RobotContainer:
                     print("Intake subsystem not available on this robot")
 
                 if has_subsystem("hood"):
-                    hood_config = TalonFXConfiguration()
-                    hood_config.slot0 = Constants.HoodConstants.GAINS
-                    hood_config.feedback.sensor_to_mechanism_ratio = Constants.HoodConstants.GEAR_RATIO
-                    hood_config.motor_output.neutral_mode = NeutralModeValue.BRAKE
-                    hood_config.motor_output.inverted = InvertedValue.CLOCKWISE_POSITIVE
-
                     hood_io = HoodIOTalonFX(
                         Constants.CanIDs.HOOD_TALON,
                     )

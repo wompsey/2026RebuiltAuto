@@ -126,15 +126,9 @@ class HoodIOTalonFX(HoodIO):
         inputs.hood_temperature = self.temperature.value_as_double
         inputs.hood_setpoint = self.setpoint.value_as_double
 
-    def set_position(self, rotations:float) -> None:
+    def set_position(self, rotation: float) -> None:
         """Set the position."""
-        """print(f"Hood setting position to {rotations}, zero position is {self.zero_position.value_as_double}") 
-        max_rotations = 0.15
-        if(rotations > max_rotations):
-            rotations = max_rotations
-        self.position_request = PositionVoltage(rotations)
-        self.hood_motor.set_control(self.position_request)"""
-        pass
+        self.hood_motor.set_control(self.position_request.with_position(rotation))
 
     def set_velocity(self, velocity: float) -> None:
         """Set the velocity."""
