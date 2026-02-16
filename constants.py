@@ -5,7 +5,7 @@ from math import *
 from phoenix6.configs.config_groups import Slot0Configs
 from robotpy_apriltag import AprilTagFieldLayout, AprilTagField
 from wpilib import RobotBase
-from wpimath.geometry import Pose2d
+from wpimath.geometry import Pose2d, Transform3d, Rotation2d, Rotation3d
 
 from robot_config import currentRobot, Robot
 
@@ -38,7 +38,7 @@ class Constants:
         HOOD_TALON = 14 # Kraken X44
         LAUNCHER_TOP_TALON = 15 # Kraken X44
         LAUNCHER_LOW_TALON = 16 # Kraken X44
-        
+
         TURRET_CANCODER = 17
         HOOD_CANCODER = 18
 
@@ -50,14 +50,20 @@ class Constants:
         GAME_PIECE_WEIGHT = 0.215
 
     class ClimberConstants:
-        GEAR_RATIO = None
-        GAINS = None
-        SERVO_PORT = None
-        SERVO_ENGAGED_ANGLE = None
+        GEAR_RATIO = 61504.0 / 189
+        GAINS = (Slot0Configs()
+                .with_k_p(40.0)
+                .with_k_i(0.0)
+                .with_k_d(0.0)
+                .with_k_s(0.0)
+                .with_k_v(0.0)
+                .with_k_a(0.0)
+            )
         VOLTAGE_INWARDS = None
-        SERVO_DISENGAGED_ANGLE = None
         VOLTAGE_OUTWARDS = None
-        CLIMB_FULL_THRESHOLD = None
+        CLIMB_FULL_THRESHOLD = 5.0 # Adjust as needed
+        SUPPLY_CURRENT = 30.0
+        MOMENT_OF_INERTIA = 0.3 # Placeholder until climber is finished
 
     class IntakeConstants:
         GEAR_RATIO = None
@@ -88,30 +94,57 @@ class Constants:
         FRONT = "limelight-front"
         # LAUNCHER = "limelight-al"
 
+        robot_to_front = Transform3d(
+            0.2,
+            0.0,
+            0.0,
+            Rotation3d(
+                0.0,
+                0.0,
+                0.0
+            )
+        )
+
+        max_ambiguity = 0.3
+        max_z_error = 0.75
+
+        # StdDev baselines, for 1-meter distance and 1 tag
+        # (Adjusted automatically based on distance and # of tags)
+        linear_std_dev_baseline = 0.02 # Meters
+        angular_std_dev_baseline = 0.06 # Radians
+
     class TurretConstants:
         GAINS = (Slot0Configs()
-                .with_k_p(1.0)
+                .with_k_p(5.4)
                 .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.0)
+                .with_k_d(0.2)
+                .with_k_s(0.49)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
         GEAR_RATIO = 170/36
         SUPPLY_CURRENT = 40
         MOI = .455
+        MAX_ROTATIONS = 0.865967
+        MAX_MANUAL_VELOCITY = 20 # rad/sec
         
     class HoodConstants:
         GEAR_RATIO = 68/3
         GAINS = (Slot0Configs()
-                .with_k_p(6.343)
+                .with_k_p(39.0)
                 .with_k_i(0.0)
                 .with_k_d(0.2)
-                .with_k_s(0.0)
+                .with_k_s(0.3)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
         )
-    SUPPLY_CURRENT = 35
+        SUPPLY_CURRENT = 30
+        # positions
+        STOW = 0.0
+        PASSING = 0.09
+        MAX_MANUAL_VELOCITY = 20
+        HARDCODED_POSITION = 0.05
+        MAX_ROTATIONS = 0.092285
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
@@ -138,51 +171,48 @@ def _init_hardware_configs():
             # Climber
             Constants.ClimberConstants.GEAR_RATIO = 61504.0 / 189
             Constants.ClimberConstants.GAINS = (Slot0Configs()
-                .with_k_p(1.0)
+                .with_k_p(40.0)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
                 .with_k_s(0.0)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
-            Constants.ClimberConstants.SERVO_PORT = 0
-            Constants.ClimberConstants.SERVO_ENGAGED_ANGLE = 0.0
-            Constants.ClimberConstants.SERVO_DISENGAGED_ANGLE = 90.0
             Constants.ClimberConstants.VOLTAGE_INWARDS = 16.0
             Constants.ClimberConstants.VOLTAGE_OUTWARDS = -4.0
-            Constants.ClimberConstants.CLIMB_FULL_THRESHOLD = 100.0  # Adjust as needed
+            Constants.ClimberConstants.CLIMB_FULL_THRESHOLD = 5.0  # Adjust as needed
+            Constants.ClimberConstants.SUPPLY_CURRENT = 30.0
+            Constants.ClimberConstants.MOMENT_OF_INERTIA = 0.3
 
         case _:  # COMP or UNKNOWN defaults to COMP
             # Climber
             Constants.ClimberConstants.GEAR_RATIO = 61504.0 / 189  # Same or different?
             Constants.ClimberConstants.GAINS = (Slot0Configs()
-                .with_k_p(1.0)
+                .with_k_p(40.0)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
                 .with_k_s(0.0)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
-            Constants.ClimberConstants.SERVO_PORT = 0
-            Constants.ClimberConstants.SERVO_ENGAGED_ANGLE = 0.0
-            Constants.ClimberConstants.SERVO_DISENGAGED_ANGLE = 90.0
             Constants.ClimberConstants.VOLTAGE_INWARDS = 16.0
             Constants.ClimberConstants.VOLTAGE_OUTWARDS = -4.0
-            Constants.ClimberConstants.CLIMB_FULL_THRESHOLD = 100.0  # Adjust as needed
+            Constants.ClimberConstants.CLIMB_FULL_THRESHOLD = 5.0  # Adjust as needed
+            Constants.ClimberConstants.SUPPLY_CURRENT = 30.0
+            Constants.ClimberConstants.MOMENT_OF_INERTIA = 0.3
 
             # Intake
-            Constants.IntakeConstants.GEAR_RATIO = 1.0  # Adjust based on actual gear ratio
+            Constants.IntakeConstants.GEAR_RATIO = 3.8333  # Adjust based on actual gear ratio
             Constants.IntakeConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.45)
+                .with_k_p(0.5)
                 .with_k_i(0.0)
-                .with_k_d(0.003)
-                .with_k_s(0.0)
-                .with_k_v(0.0)
+                .with_k_d(0.0)
+                .with_k_s(0.17)
+                .with_k_v(0.14)
                 .with_k_a(0.0)
             )
             Constants.IntakeConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.IntakeConstants.MOMENT_OF_INERTIA = 0.0067
-            Constants.IntakeConstants.FEED_FORWARD = 1.1
 
             # Launcher
             Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio
@@ -213,6 +243,6 @@ def _init_hardware_configs():
             Constants.FeederConstants.SUPPLY_CURRENT = 30.0  # Amperes
             Constants.FeederConstants.MOMENT_OF_INERTIA = 0.0067
             Constants.FeederConstants.FEED_FORWARD = 3.0
-            
+
 # Initialize hardware configs at module load time
 _init_hardware_configs()

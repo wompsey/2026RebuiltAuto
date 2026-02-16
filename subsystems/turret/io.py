@@ -4,7 +4,7 @@ from typing import Final
 
 from phoenix6 import BaseStatusSignal
 from phoenix6.configs import TalonFXConfiguration
-from phoenix6.controls import PositionVoltage
+from phoenix6.controls import PositionVoltage, VelocityVoltage
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, InvertedValue
 from pykit.autolog import autolog
@@ -35,6 +35,8 @@ class TurretIO(ABC):
         turret_current: amperes = 0.0
         turret_temperature: celsius = 0.0
         turret_setpoint: radians = 0.0
+        turret_zero_position: float = 0.0
+        turret_target_position: float = 0.0
 
 
     def update_inputs(self, inputs: TurretIOInputs) -> None:
@@ -48,12 +50,20 @@ class TurretIO(ABC):
             radians: The position in radians to set the turret to.
         """
         pass
+    
+    def set_velocity(self, velocity: float) -> None:
+        """
+        Set the turret velocity in radians per second.
+        Args:
+            velocity: The velocity in radians per second to set the turret to.
+        """
+        pass
 
 
 class TurretIOTalonFX(TurretIO):
     
-    def __init__(self, motor_id: int) -> None:
-        self.turret_motor: Final[TalonFX] = TalonFX(motor_id, "rio")
+    def __init__(self) -> None:
+        self.turret_motor: Final[TalonFX] = TalonFX(Constants.CanIDs.TURRET_TALON, "rio")
 
         self.controller = PIDController(
             Constants.TurretConstants.GAINS.k_p,
@@ -75,6 +85,8 @@ class TurretIOTalonFX(TurretIO):
         self.current = self.turret_motor.get_stator_current()
         self.temperature = self.turret_motor.get_device_temp()
         self.setpoint = self.turret_motor.get_closed_loop_reference()
+        self._zero_position = self.position.value_as_double
+        self.target_position = 0.0
 
         BaseStatusSignal.set_update_frequency_for_all(
             50,
@@ -89,6 +101,7 @@ class TurretIOTalonFX(TurretIO):
         self.turret_motor.optimize_bus_utilization()
 
         self.position_request = PositionVoltage(0)
+        self.velocity_request = VelocityVoltage(0)
 
     def update_inputs(self, inputs: TurretIO.TurretIOInputs):
         motor_status = BaseStatusSignal.refresh_all(
@@ -107,6 +120,8 @@ class TurretIOTalonFX(TurretIO):
         inputs.turret_current = self.current.value_as_double
         inputs.turret_temperature = self.temperature.value_as_double
         inputs.turret_setpoint = self.setpoint.value_as_double
+        inputs.turret_zero_position = self._zero_position
+        inputs.turret_target_position = self.target_position
 
     def set_position(self, radians: float) -> None:
         """
@@ -114,8 +129,32 @@ class TurretIOTalonFX(TurretIO):
         Args:
             radians: The position in radians to set the turret to.
         """
-        self.position_request = PositionVoltage(radiansToRotations(radians))
+        rotations = radiansToRotations(radians) + self._zero_position
+        self.target_position = rotations
+        if rotations > Constants.TurretConstants.MAX_ROTATIONS + self._zero_position:
+            rotations = Constants.TurretConstants.MAX_ROTATIONS + self._zero_position
+            print("Turret position is too high, setting to max")
+        elif rotations < self._zero_position:
+            rotations = self._zero_position
+            print("Turret position is too low, setting to zero")
+        print(f"Turret setting position to {rotations}, zero position is {self._zero_position}")
+        self.position_request = PositionVoltage(rotations)
         self.turret_motor.set_control(self.position_request)
+
+    def set_velocity(self, velocity: float) -> None:
+        """
+        Set the turret velocity in radians per second using closed loop control.
+        Args:
+            velocity: The velocity in radians per second to set the turret to.
+        """
+        if velocity > 0 and self.position.value_as_double >= Constants.TurretConstants.MAX_ROTATIONS + self._zero_position:
+            velocity = 0
+            print("Turret position is too high, setting to zero")
+        elif velocity < 0 and self.position.value_as_double <= self._zero_position:
+            velocity = 0
+            print("Turret position is too low, setting to zero")
+        self.velocity_request = VelocityVoltage(radiansToRotations(velocity))
+        self.turret_motor.set_control(self.velocity_request)
 
 
 
@@ -139,7 +178,10 @@ class TurretIOSim(TurretIO):
             Constants.TurretConstants.GAINS.k_p,
             Constants.TurretConstants.GAINS.k_i,
             Constants.TurretConstants.GAINS.k_d,
-            ) 
+            )
+
+        self._zero_position = 0.0  # Sim starts at 0
+        self.target_position = 0.0
 
     def update_inputs(self, inputs: TurretIO.TurretIOInputs) -> None:
         """Update inputs with simulated state."""
@@ -171,6 +213,15 @@ class TurretIOSim(TurretIO):
             radians: The position in radians to set the turret to.
         """
         self.closed_loop = True
+        self.target_position = radiansToRotations(radians)
         self.controller.setSetpoint(radians)
 
-    
+    def set_velocity(self, velocity: float) -> None:
+        """
+        Set the turret velocity in radians per second.
+        Args:
+            velocity: The velocity in radians per second to set the turret to.
+        """
+        self.closed_loop = True
+        self.controller.setSetpoint(velocity)
+        # Could possibly be wrong since it's using velocity and not radians    
