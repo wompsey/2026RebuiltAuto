@@ -11,12 +11,11 @@ from typing import Callable
 from pathplannerlib.auto import FlippingUtil, AutoBuilder
 from pykit.logger import Logger
 from wpilib import Alert, DriverStation
-from wpimath.filter import Debouncer
-from wpimath.geometry import Pose2d, Rotation2d, Pose3d
+from wpimath.geometry import Pose2d, Pose3d
 from wpimath.units import degreesToRotations
 
 from constants import Constants
-from subsystems import Subsystem, StateSubsystem
+from subsystems import StateSubsystem
 from subsystems.hood.io import HoodIO
 
 
@@ -44,14 +43,14 @@ class HoodSubsystem(StateSubsystem):
 
         self.io = io
         self.alliance = DriverStation.getAlliance()
-        self.set_desired_state(HoodSubsystem.SubsystemState.MANUAL)
+        self.set_desired_state(HoodSubsystem.SubsystemState.STOW)
 
         self.robot_pose_supplier = robot_pose_supplier
 
         self.inputs = HoodIO.HoodIOInputs()
         self.hood_disconnected_alert = Alert("Hood motor is disconnected.", Alert.AlertType.kError)
 
-        self.hub_pose = Constants.FieldConstants.HUB_POSE  # blue hub
+        #self.hub_pose = Constants.FieldConstants.HUB_POSE  # blue hub
         self.launch_speed =  12.26  # meters per second, will be passed in from shooter later
         self.distance = 1.0000000
         self.angle = 1.0000000
@@ -70,26 +69,26 @@ class HoodSubsystem(StateSubsystem):
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""
-        self.io.update_inputs(self.inputs)
-        Logger.processInputs("Hood", self.inputs)
-        Logger.recordOutput("Hood/Calculated Angle", self.angle)
-        Logger.recordOutput("Hood/Distance", self.distance)
-
-        self.distance = (self.robot_pose_supplier()
-                         .translation().distance(self.hub_pose.translation()))
-
-        self.io.set_position(0.0)
-        #self.io.set_position(degreesToRotations(self.angle))
-        #self.io.set_position(Rotation2d.fromDegrees(self.angle)) # convert degrees to rotations
-
-        self.hood_disconnected_alert.set(not self.inputs.hood_connected)
-
-        if StateSubsystem.get_current_state(self) == self.SubsystemState.AIMBOT:
-            self.update_angle() #locks aimbot to aimbot state
-
+        self.alliance = DriverStation.getAlliance()
         self.hub_pose = Constants.FieldConstants.HUB_POSE if not (
             AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
             Constants.FieldConstants.HUB_POSE)
+        self.io.update_inputs(self.inputs)
+        Logger.processInputs("Hood", self.inputs)
+        #Logger.recordOutput("Hood/Calculated Angle", self.angle)
+        #Logger.recordOutput("Hood/Distance", self.distance)
+
+        auto_aim, hood_pos = self._state_configs.get(self.get_current_state(), 0.0)
+        if auto_aim:
+            self.distance = (self.robot_pose_supplier()
+                         .translation().distance(self.hub_pose.translation()))
+            self.update_angle()
+            print(f"Distance: {self.distance}, Angle: {self.angle}")
+            self.io.set_position(degreesToRotations(self.angle))
+        else:
+            self.io.set_position(hood_pos)
+
+        self.hood_disconnected_alert.set(not self.inputs.hood_connected)
 
     def set_desired_state(self, desired_state: SubsystemState) -> None:
         """set state"""
@@ -99,12 +98,15 @@ class HoodSubsystem(StateSubsystem):
         auto_aim, hood_pos = self._state_configs.get(desired_state, 0.0)
 
         if auto_aim:
+            self.distance = (self.robot_pose_supplier()
+                         .translation().distance(self.hub_pose.translation()))
+            self.update_angle()
             hood_pos = degreesToRotations(self.angle)
-        #self.io.set_position(hood_pos)
+        self.io.set_position(hood_pos)
 
     def get_current_state(self) -> SubsystemState | None:
         """get state"""
-
+        return super().get_current_state()
 
     def get_component_pose(self) -> Pose3d:
         """For advantage scope modelling (placeholder)."""

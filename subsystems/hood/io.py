@@ -129,28 +129,19 @@ class HoodIOTalonFX(HoodIO):
 
     def set_position(self, rotation: float) -> None:
         """Set the position."""
-        rotation = self.target_position
-        """rotation = Constants.HoodConstants.HARDCODED_POSITION #hardcoded for testing
-        rotation = rotation + self._zero_position #zero position is the position of the hood when the robot is in the stow position
-        """
         if rotation > Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
             rotation = Constants.HoodConstants.MAX_ROTATIONS + self._zero_position
-            print("Hood position is too high, setting to max")
         elif rotation < self._zero_position:
             rotation = self._zero_position
-            print("Hood position is too low, setting to zero")
-        print(f"Hood setting position to {rotation}, zero position is {self._zero_position}")
+        
         self.hood_motor.set_control(self.position_request.with_position(rotation))
 
     def set_velocity(self, velocity: float) -> None:
         """Set the velocity."""
         if velocity > 0 and self.position.value_as_double >= Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
             velocity = 0
-            print("Hood position is too high, setting to zero")
         elif velocity < 0 and self.position.value_as_double <= self._zero_position:
-            velocity = 0
-            print("Hood position is too low, setting to zero")
-        print(f"Hood setting velocity to {velocity}")
+            velocity = 0   
         self.velocity_request = VelocityVoltage(radiansToRotations(velocity))
         self.hood_motor.set_control(self.velocity_request)
 
