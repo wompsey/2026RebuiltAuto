@@ -39,9 +39,6 @@ class Constants:
         LAUNCHER_TOP_TALON = 15 # Kraken X44
         LAUNCHER_LOW_TALON = 16 # Kraken X44
 
-        TURRET_CANCODER = 17
-        HOOD_CANCODER = 18
-
         # Power Distribution (REV PDH or CTRE PDP). Set to None if no PDH/PDP on CAN bus
         # to avoid "CAN: Message not found: Module N" errors from pykit logging.
         POWER_DISTRIBUTION_MODULE_ID: Final[int | None] = None
@@ -115,10 +112,10 @@ class Constants:
 
     class TurretConstants:
         GAINS = (Slot0Configs()
-                .with_k_p(5.4)
+                .with_k_p(35)
                 .with_k_i(0.0)
-                .with_k_d(0.2)
-                .with_k_s(0.49)
+                .with_k_d(4)
+                .with_k_s(0.4569140625)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
@@ -140,11 +137,11 @@ class Constants:
         )
         SUPPLY_CURRENT = 30
         # positions
-        STOW = 0.0
+        STOW = -0.0263671875
         PASSING = 0.09
         MAX_MANUAL_VELOCITY = 20
         HARDCODED_POSITION = 0.05
-        MAX_ROTATIONS = 0.092285
+        MAX_ROTATIONS = 0.054687567
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed
@@ -217,11 +214,11 @@ def _init_hardware_configs():
             # Launcher
             Constants.LauncherConstants.GEAR_RATIO = 1.25  # Adjust based on actual gear ratio
             Constants.LauncherConstants.GAINS = (Slot0Configs()
-                .with_k_p(0.3)
+                .with_k_p(0.2)
                 .with_k_i(0.0)
                 .with_k_d(0.0)
-                .with_k_s(0.0985)
-                .with_k_v(0.0)
+                .with_k_s(0.2750000067)
+                .with_k_v(0.12787)
                 .with_k_a(0.0)
             )
             Constants.LauncherConstants.SUPPLY_CURRENT = 30.0  # Amperes
