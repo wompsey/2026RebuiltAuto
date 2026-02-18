@@ -12,6 +12,7 @@ from wpimath.units import radians, radians_per_second, radiansToRotations, volts
 from wpimath.system.plant import DCMotor, LinearSystemId
 from wpilib.simulation import DCMotorSim
 from wpimath.controller import PIDController
+from math import pi
 
 from constants import Constants
 from util import tryUntilOk
@@ -177,9 +178,9 @@ class TurretIOSim(TurretIO):
         self.applied_volts: float = 0.0
 
         self.controller = PIDController(
-            Constants.TurretConstants.GAINS.k_p,
-            Constants.TurretConstants.GAINS.k_i,
-            Constants.TurretConstants.GAINS.k_d,
+            Constants.TurretConstants.GAINS.k_p / (2*pi),
+            Constants.TurretConstants.GAINS.k_i / (2*pi),
+            Constants.TurretConstants.GAINS.k_d / (2*pi),
             )
 
         self._zero_position = 0.0  # Sim starts at 0
