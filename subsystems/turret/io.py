@@ -226,5 +226,8 @@ class TurretIOSim(TurretIO):
             velocity: The velocity in radians per second to set the turret to.
         """
         self.closed_loop = True
-        self.controller.setSetpoint(velocity)
-        # Could possibly be wrong since it's using velocity and not radians    
+        if velocity > 0 and self._motorPosition*(2*pi) >= Constants.TurretConstants.MAX_ROTATIONS + self._zero_position:
+            velocity = 0
+        elif velocity < 0 and self._motorPosition*(2*pi) <= self._zero_position:
+            velocity = 0
+        self.controller.setSetpoint(velocity)   

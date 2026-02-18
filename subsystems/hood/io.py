@@ -193,6 +193,11 @@ class HoodIOSim(HoodIO):
     def set_position(self, rotation: float) -> None:
         """Set the position."""
 
+        if rotation > Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
+            rotation = Constants.HoodConstants.MAX_ROTATIONS + self._zero_position
+        elif rotation < self._zero_position:
+            rotation = self._zero_position
+
         self.closed_loop = True
         self.controller.setSetpoint(rotationsToRadians(rotation))
 
