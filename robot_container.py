@@ -194,7 +194,7 @@ class RobotContainer:
                 
 
         self.superstructure = Superstructure(
-            self.drivetrain, self.climber, self.intake
+            self.intake, self.feeder, self.launcher, self.hood
         )
 
         self._setup_swerve_requests()
@@ -211,7 +211,7 @@ class RobotContainer:
     def _pathplanner_setup(self):
         # Register NamedCommands
         NamedCommands.registerCommand("Default", self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
-        NamedCommands.registerCommand("Score in Hub", self.superstructure.set_goal_command(Superstructure.Goal.SCORE))
+        NamedCommands.registerCommand("Score in Hub", self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH))
         NamedCommands.registerCommand("Climb Ready", self.superstructure.set_goal_command(Superstructure.Goal.CLIMBREADY))
         NamedCommands.registerCommand("Climb", self.superstructure.set_goal_command(Superstructure.Goal.CLIMB))
 
@@ -326,6 +326,10 @@ class RobotContainer:
                     InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.PASS))
                 )
             )
+
+            self._function_controller.a().onTrue(
+                self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH)
+            ).onFalse(self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
 
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
                 InstantCommand(lambda: self.turret.set_desired_state(self.turret.SubsystemState.MANUAL)).alongWith(

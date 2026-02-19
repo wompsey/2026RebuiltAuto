@@ -4,11 +4,12 @@ from typing import Optional
 from commands2 import Command, Subsystem, cmd
 from wpilib import DriverStation
 
-from constants import Constants
-from subsystems import StateSubsystem
-from subsystems.climber import ClimberSubsystem
 from subsystems.intake import IntakeSubsystem
-from subsystems.swerve import SwerveSubsystem
+from subsystems.feeder import FeederSubsystem
+from subsystems.launcher import LauncherSubsystem
+from subsystems.hood import HoodSubsystem
+from subsystems.turret import TurretSubsystem
+from subsystems.climber import ClimberSubsystem
 
 
 class Superstructure(Subsystem):
@@ -17,45 +18,102 @@ class Superstructure(Subsystem):
     """
 
     class Goal(Enum):
-        DEFAULT = auto()
-        PASSOUTPOST = auto() # Passing to the outpost side of the alliance center
-        PASSDEPOT = auto() # Passing to the depot side of the alliance center
-        SCORE = auto() # Scoring fuel into the hub
-        CLIMBREADY = auto() # Ready to climb
-        CLIMB= auto() # Climb on to the first rung of the tower
-        DESCEND = auto() # Descend from the tower
-        INTAKE = auto() # Intaking fuel from the floor.  This goal may be removed
-
-
+        DEFAULT     = auto()  # Default goal
+        INTAKE      = auto()  # Intaking fuel from the floor.  This goal may be removed
+        LAUNCH      = auto()  # Scoring fuel into the hub
+        SCOREHUB    = auto()  # Point turret to hub
+        PASSOUTPOST = auto()  # Point turret to the outpost side of the alliance center
+        PASSDEPOT   = auto()  # Point turret to the depot side of the alliance center
+        CLIMBREADY  = auto()  # Ready to climb
+        CLIMB       = auto()  # Climb on to the first rung of the tower
+        DESCEND     = auto()  # Descend from the tower
+        
 
     # Map each goal to each subsystem state to reduce code complexity
     _goal_to_states: dict[Goal,
-            tuple[
-                Optional[StateSubsystem.SubsystemState]
-            ]] = {
-        Goal.DEFAULT: (IntakeSubsystem.SubsystemState.STOP),
-        Goal.CLIMB: (IntakeSubsystem.SubsystemState.STOP),
+        tuple[
+            Optional[IntakeSubsystem.SubsystemState],
+            Optional[FeederSubsystem.SubsystemState],
+            Optional[LauncherSubsystem.SubsystemState],
+            Optional[HoodSubsystem.SubsystemState],
+            Optional[TurretSubsystem.SubsystemState],
+            Optional[ClimberSubsystem.SubsystemState],
+        ]] = {
+
+        Goal.DEFAULT     : (
+            IntakeSubsystem.SubsystemState.STOP,
+            FeederSubsystem.SubsystemState.STOP,
+            LauncherSubsystem.SubsystemState.IDLE,
+            HoodSubsystem.SubsystemState.STOW,
+            TurretSubsystem.SubsystemState.HUB,
+            ClimberSubsystem.SubsystemState.STOW,
+        ),
+
+        Goal.INTAKE      : (
+            IntakeSubsystem.SubsystemState.INTAKE,
+            FeederSubsystem.SubsystemState.STOP,
+            LauncherSubsystem.SubsystemState.IDLE,
+            HoodSubsystem.SubsystemState.STOW,
+            None, None,
+        ),
+
+        Goal.LAUNCH      : (
+            IntakeSubsystem.SubsystemState.INTAKE,
+            FeederSubsystem.SubsystemState.INWARD,
+            LauncherSubsystem.SubsystemState.SCORE,
+            HoodSubsystem.SubsystemState.AIMBOT,
+            None, None,
+        ),
+
+        Goal.SCOREHUB    : (
+            None, None, None, None, 
+            TurretSubsystem.SubsystemState.HUB, 
+            None,
+        ),
+
+        Goal.PASSOUTPOST : (
+            None, None, None, None, 
+            TurretSubsystem.SubsystemState.OUTPOST, 
+            None,
+        ),
+
+        Goal.PASSDEPOT   : (
+            None, None, None, None, 
+            TurretSubsystem.SubsystemState.DEPOT, 
+            None,
+        ),
 
     }
 
-    def __init__(self, drivetrain: SwerveSubsystem, climber: Optional[ClimberSubsystem] = None, intake: Optional[IntakeSubsystem] = None) -> None:
+    def __init__(self, 
+            intake: Optional[IntakeSubsystem] = None,
+            feeder: Optional[FeederSubsystem] = None,
+            launcher: Optional[LauncherSubsystem] = None,
+            hood: Optional[HoodSubsystem] = None,
+            turret: Optional[TurretSubsystem] = None,
+            climber: Optional[ClimberSubsystem] = None,
+                 ) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
         Subsystems are optional to support robots that don't have all hardware.
 
-        :param drivetrain: Swerve drive base
-        :type drivetrain: Drive
-        :param vision: Handles all vision estimates
-        :type vision: VisionSubsystem
-        :param climber: Subsystem that handles the climber (optional)
-        :type climber: Optional[ClimberSubsystem]
-        :param intake: Subsystem that handles the intake (optional)
-        :type intake: Optional[IntakeSubsystem]
+        :param intake: Subsystem that handles the intake
+          :type intake: Optional[IntakeSubsystem]
+        :param feeder: Subsystem that handles the feeder
+          :type feeder: Optional[FeederSubsystem]
+        :param launcher: Subsystem that handles the launcher
+          :type launcher: Optional[LauncherSubsystem]
+        :param hood: Subsystem that handles the hood
+          :type hood: Optional[HoodSubsystem]
         """
         super().__init__()
-        self.drivetrain = drivetrain
-        self.climber = climber
+
         self.intake = intake
+        self.feeder = feeder
+        self.launcher = launcher
+        self.hood = hood
+        self.turret = turret
+        self.climber = climber
 
         self._goal = self.Goal.DEFAULT
         self.set_goal_command(self._goal)
@@ -67,27 +125,30 @@ class Superstructure(Subsystem):
     def periodic(self):
         if DriverStation.isDisabled():
             return
-
         # TODO add other subsystem periodic functions
 
     def _set_goal(self, goal: Goal) -> None:
         self._goal = goal
 
-        # Handle intake if present
-        if self.intake is not None:
-            intake_state = self.intake.get_current_state()
-            safety_checks = self._should_enable_safety_checks(intake_state)  # TODO pass states that are required for safety checks
+        intake_state, feeder_state, launcher_state, hood_state, turret_state, climber_state = self._goal_to_states.get(goal, (None, None, None, None, None, None))
 
-    def _should_enable_safety_checks(self, intake_state: Optional[IntakeSubsystem.SubsystemState]) -> bool:
-        """ Safety check example of intake being in the frame """
-        if self.intake is None:
-            return True  # No safety checks needed if intake doesn't exist
+        if not (self.intake is None or intake_state is None):
+            self.intake.set_desired_state(intake_state)
 
-        if intake_state == self.intake.get_current_state():
-            return False
-        return not (
-                self.intake.get_current_state().value < Constants.IntakeConstants.INSIDE_FRAME_ANGLE
-        )
+        if not (self.feeder is None or feeder_state is None):
+            self.feeder.set_desired_state(feeder_state)
+
+        if not (self.launcher is None or launcher_state is None):
+            self.launcher.set_desired_state(launcher_state)
+
+        if not (self.hood is None or hood_state is None):
+            self.hood.set_desired_state(hood_state)
+
+        if not (self.turret is None or turret_state is None):
+            self.turret.set_desired_state(turret_state)
+
+        if not (self.climber is None or climber_state is None):
+            self.climber.set_desired_state(climber_state)
 
     def set_goal_command(self, goal: Goal) -> Command:
         """
