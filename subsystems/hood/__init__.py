@@ -66,17 +66,15 @@ class HoodSubsystem(StateSubsystem):
                  abs(self.launch_speed ** 4 -
                  9.80665 *
                  (9.80665 * self.distance ** 2 +
-                  3 * Constants.FieldConstants.HUB_HEIGHT * self.launch_speed ** 2))))
+                  3 * Constan
+                  ts.FieldConstants.HUB_HEIGHT * self.launch_speed ** 2))))
             / (9.80665 * self.distance)))
         """
         
         #power regression interpolation based on testing data, may need to be updated (gooder)
 
-        self.angle = degrees(
-            float("4.84713e-010") * (self.distance ** 3.89802) 
-            if self.distance < 84 
-            else float("1.05564e-033") * (self.distance ** 15.57268) 
-        )
+        self.angle = 0.00000159885 * (self.distance ** 9.05419) 
+
 
 
     def periodic(self) -> None:
@@ -86,9 +84,6 @@ class HoodSubsystem(StateSubsystem):
             AutoBuilder.shouldFlip()) else FlippingUtil.flipFieldPose(
             Constants.FieldConstants.HUB_POSE)
         self.io.update_inputs(self.inputs)
-        Logger.processInputs("Hood", self.inputs)
-        #Logger.recordOutput("Hood/Calculated Angle", self.angle)
-        #Logger.recordOutput("Hood/Distance", self.distance)
 
         auto_aim, hood_pos = self._state_configs.get(self.get_current_state(), 0.0)
         if auto_aim:
@@ -96,11 +91,16 @@ class HoodSubsystem(StateSubsystem):
                          .translation().distance(self.hub_pose.translation()))
             self.update_angle()
             print(f"Distance: {self.distance}, Angle: {self.angle}")
-            self.io.set_position(degreesToRotations(self.angle))
+            
+            self.io.set_position(self.angle)
         else:
             self.io.set_position(hood_pos)
 
         self.hood_disconnected_alert.set(not self.inputs.hood_connected)
+
+        Logger.processInputs("Hood", self.inputs)
+        Logger.recordOutput("Hood/Distance", self.distance)
+        #Logger.recordOutput("Hood/Angle", self.angle)
 
     def set_desired_state(self, desired_state: SubsystemState) -> None:
         """set state"""
@@ -113,7 +113,6 @@ class HoodSubsystem(StateSubsystem):
             self.distance = (self.robot_pose_supplier()
                          .translation().distance(self.hub_pose.translation()))
             self.update_angle()
-            hood_pos = degreesToRotations(self.angle)
         self.io.set_position(hood_pos)
 
     def get_current_state(self) -> SubsystemState | None:

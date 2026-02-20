@@ -39,7 +39,7 @@ class HoodIO(ABC):
         hood_applied_volts: volts = 0.0
         hood_current: amperes = 0.0
         hood_temperature: celsius = 0.0
-        hood_setpoint: radians = 0.0
+        hood_setpoint: float = 0.0
         hood_zero_position: float = 0.0
 
 
@@ -130,10 +130,10 @@ class HoodIOTalonFX(HoodIO):
 
     def set_position(self, rotation: float) -> None:
         """Set the position."""
-        if rotation > Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
-            rotation = Constants.HoodConstants.MAX_ROTATIONS + self._zero_position
-        elif rotation < self._zero_position:
-            rotation = self._zero_position
+        #if rotation > Constants.HoodConstants.MAX_ROTATIONS + self._zero_position:
+         #   rotation = Constants.HoodConstants.MAX_ROTATIONS + self._zero_position
+        # elif rotation < self._zero_position:
+        #     rotation = self._zero_position
         
         print(f"Hood setting position to {rotation}, zero position is {self._zero_position}")
         self.hood_motor.set_control(self.position_request.with_position(rotation))
