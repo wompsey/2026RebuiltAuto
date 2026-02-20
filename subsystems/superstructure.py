@@ -9,7 +9,6 @@ from subsystems.feeder import FeederSubsystem
 from subsystems.launcher import LauncherSubsystem
 from subsystems.hood import HoodSubsystem
 from subsystems.turret import TurretSubsystem
-from subsystems.climber import ClimberSubsystem
 
 
 class Superstructure(Subsystem):
@@ -37,7 +36,6 @@ class Superstructure(Subsystem):
             Optional[LauncherSubsystem.SubsystemState],
             Optional[HoodSubsystem.SubsystemState],
             Optional[TurretSubsystem.SubsystemState],
-            Optional[ClimberSubsystem.SubsystemState],
         ]] = {
 
         Goal.DEFAULT     : (
@@ -46,7 +44,6 @@ class Superstructure(Subsystem):
             LauncherSubsystem.SubsystemState.IDLE,
             HoodSubsystem.SubsystemState.STOW,
             TurretSubsystem.SubsystemState.HUB,
-            ClimberSubsystem.SubsystemState.STOW,
         ),
 
         Goal.INTAKE      : (
@@ -54,7 +51,7 @@ class Superstructure(Subsystem):
             FeederSubsystem.SubsystemState.STOP,
             LauncherSubsystem.SubsystemState.IDLE,
             HoodSubsystem.SubsystemState.STOW,
-            None, None,
+            None
         ),
 
         Goal.LAUNCH      : (
@@ -62,25 +59,22 @@ class Superstructure(Subsystem):
             FeederSubsystem.SubsystemState.INWARD,
             LauncherSubsystem.SubsystemState.SCORE,
             HoodSubsystem.SubsystemState.AIMBOT,
-            None, None,
+            None
         ),
 
         Goal.SCOREHUB    : (
             None, None, None, None, 
-            TurretSubsystem.SubsystemState.HUB, 
-            None,
+            TurretSubsystem.SubsystemState.HUB
         ),
 
         Goal.PASSOUTPOST : (
             None, None, None, None, 
-            TurretSubsystem.SubsystemState.OUTPOST, 
-            None,
+            TurretSubsystem.SubsystemState.OUTPOST
         ),
 
         Goal.PASSDEPOT   : (
             None, None, None, None, 
-            TurretSubsystem.SubsystemState.DEPOT, 
-            None,
+            TurretSubsystem.SubsystemState.DEPOT
         ),
 
     }
@@ -90,8 +84,7 @@ class Superstructure(Subsystem):
             feeder: Optional[FeederSubsystem] = None,
             launcher: Optional[LauncherSubsystem] = None,
             hood: Optional[HoodSubsystem] = None,
-            turret: Optional[TurretSubsystem] = None,
-            climber: Optional[ClimberSubsystem] = None,
+            turret: Optional[TurretSubsystem] = None
                  ) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
@@ -105,6 +98,8 @@ class Superstructure(Subsystem):
           :type launcher: Optional[LauncherSubsystem]
         :param hood: Subsystem that handles the hood
           :type hood: Optional[HoodSubsystem]
+        :param turret: Subsystem that handles the turret
+          :type turret: Optional[TurretSubsystem]
         """
         super().__init__()
 
@@ -113,7 +108,6 @@ class Superstructure(Subsystem):
         self.launcher = launcher
         self.hood = hood
         self.turret = turret
-        self.climber = climber
 
         self._goal = self.Goal.DEFAULT
         self.set_goal_command(self._goal)
@@ -130,7 +124,7 @@ class Superstructure(Subsystem):
     def _set_goal(self, goal: Goal) -> None:
         self._goal = goal
 
-        intake_state, feeder_state, launcher_state, hood_state, turret_state, climber_state = self._goal_to_states.get(goal, (None, None, None, None, None, None))
+        intake_state, feeder_state, launcher_state, hood_state, turret_state = self._goal_to_states.get(goal, (None, None, None, None, None))
 
         if not (self.intake is None or intake_state is None):
             self.intake.set_desired_state(intake_state)
@@ -146,9 +140,6 @@ class Superstructure(Subsystem):
 
         if not (self.turret is None or turret_state is None):
             self.turret.set_desired_state(turret_state)
-
-        if not (self.climber is None or climber_state is None):
-            self.climber.set_desired_state(climber_state)
 
     def set_goal_command(self, goal: Goal) -> Command:
         """
