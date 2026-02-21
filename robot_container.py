@@ -41,6 +41,7 @@ class RobotContainer:
         print(f"Initializing RobotContainer for: {currentRobot.name}")
         self._max_speed = TunerConstants.speed_at_12_volts
         self._max_angular_rate = rotationsToRadians(1)
+
         if currentRobot == Robot.LARRY:
             self._max_speed = LarryTunerConstants.speed_at_12_volts
 
@@ -59,6 +60,7 @@ class RobotContainer:
         self.feeder: Optional[FeederSubsystem] = None
         self.launcher: Optional[LauncherSubsystem] = None
         self.turret: Optional[TurretSubsystem] = None
+
         match Constants.currentMode:
             case Constants.Mode.REAL:
                 # Real robot, instantiate hardware IO implementations
@@ -194,7 +196,7 @@ class RobotContainer:
                 
 
         self.superstructure = Superstructure(
-            self.drivetrain, self.climber, self.intake
+            self.intake, self.feeder, self.launcher, self.hood
         )
 
         self._setup_swerve_requests()
@@ -211,9 +213,13 @@ class RobotContainer:
     def _pathplanner_setup(self):
         # Register NamedCommands
         NamedCommands.registerCommand("Default", self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
-        NamedCommands.registerCommand("Score in Hub", self.superstructure.set_goal_command(Superstructure.Goal.SCORE))
-        NamedCommands.registerCommand("Climb Ready", self.superstructure.set_goal_command(Superstructure.Goal.CLIMBREADY))
-        NamedCommands.registerCommand("Climb", self.superstructure.set_goal_command(Superstructure.Goal.CLIMB))
+        NamedCommands.registerCommand("Launch", self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH))
+        NamedCommands.registerCommand("Aim to Depot", self.superstructure.set_goal_command(Superstructure.Goal.AIMDEPOT))
+        NamedCommands.registerCommand("Aim to Outpost", self.superstructure.set_goal_command(Superstructure.Goal.AIMOUTPOST))
+        NamedCommands.registerCommand("Aim to Hub", self.superstructure.set_goal_command(Superstructure.Goal.AIMHUB))
+
+        NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
+        NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
 
         # Build AutoChooser
         self._auto_chooser: LoggedDashboardChooser[commands2.Command] = LoggedDashboardChooser("Auto")
@@ -326,6 +332,10 @@ class RobotContainer:
                     InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.PASS))
                 )
             )
+
+            self._function_controller.a().onTrue(
+                self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH)
+            ).onFalse(self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
 
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
                 InstantCommand(lambda: self.turret.set_desired_state(self.turret.SubsystemState.MANUAL)).alongWith(
