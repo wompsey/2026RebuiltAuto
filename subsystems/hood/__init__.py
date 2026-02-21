@@ -55,27 +55,9 @@ class HoodSubsystem(StateSubsystem):
         self.distance = 1.0000000
         self.angle = 1.0000000
 
-    def update_angle(self) -> None:
+    def interpolate(self) -> None:
         """Updates hood angle."""
-
-        """ 
-        Calculation through kinematic equations
-        self.angle = degrees(atan(  # calculates angle
-            (self.launch_speed ** 2 +
-             sqrt(
-                 abs(self.launch_speed ** 4 -
-                 9.80665 *
-                 (9.80665 * self.distance ** 2 +
-                  3 * Constan
-                  ts.FieldConstants.HUB_HEIGHT * self.launch_speed ** 2))))
-            / (9.80665 * self.distance)))
-        """
-        
-        #power regression interpolation based on testing data, may need to be updated (gooder)
-
         self.angle = 0.00000159885 * (self.distance ** 9.05419) 
-
-
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""
