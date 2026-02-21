@@ -20,13 +20,9 @@ class Superstructure(Subsystem):
         DEFAULT     = auto()  # Default goal
         INTAKE      = auto()  # Intaking fuel from the floor.  This goal may be removed
         LAUNCH      = auto()  # Scoring fuel into the hub
-        SCOREHUB    = auto()  # Point turret to hub
-        PASSOUTPOST = auto()  # Point turret to the outpost side of the alliance center
-        PASSDEPOT   = auto()  # Point turret to the depot side of the alliance center
-        CLIMBREADY  = auto()  # Ready to climb
-        CLIMB       = auto()  # Climb on to the first rung of the tower
-        DESCEND     = auto()  # Descend from the tower
-        
+        AIMHUB      = auto()  # Point turret to hub
+        AIMOUTPOST  = auto()  # Point turret to the outpost side of the alliance center
+        AIMDEPOT    = auto()  # Point turret to the depot side of the alliance center
 
     # Map each goal to each subsystem state to reduce code complexity
     _goal_to_states: dict[Goal,
@@ -38,7 +34,7 @@ class Superstructure(Subsystem):
             Optional[TurretSubsystem.SubsystemState],
         ]] = {
 
-        Goal.DEFAULT     : (
+        Goal.DEFAULT : (
             IntakeSubsystem.SubsystemState.STOP,
             FeederSubsystem.SubsystemState.STOP,
             LauncherSubsystem.SubsystemState.IDLE,
@@ -46,7 +42,7 @@ class Superstructure(Subsystem):
             TurretSubsystem.SubsystemState.HUB,
         ),
 
-        Goal.INTAKE      : (
+        Goal.INTAKE : (
             IntakeSubsystem.SubsystemState.INTAKE,
             FeederSubsystem.SubsystemState.STOP,
             LauncherSubsystem.SubsystemState.IDLE,
@@ -54,26 +50,28 @@ class Superstructure(Subsystem):
             None
         ),
 
-        Goal.LAUNCH      : (
+        Goal.LAUNCH : (
             IntakeSubsystem.SubsystemState.INTAKE,
             FeederSubsystem.SubsystemState.INWARD,
             LauncherSubsystem.SubsystemState.SCORE,
-            HoodSubsystem.SubsystemState.AIMBOT,
-            None
+            None, None
         ),
 
-        Goal.SCOREHUB    : (
-            None, None, None, None, 
+        Goal.AIMHUB : (
+            None, None, None, 
+            HoodSubsystem.SubsystemState.AIMBOT, 
             TurretSubsystem.SubsystemState.HUB
         ),
 
-        Goal.PASSOUTPOST : (
-            None, None, None, None, 
+        Goal.AIMOUTPOST : (
+            None, None, None, 
+            HoodSubsystem.SubsystemState.PASS, 
             TurretSubsystem.SubsystemState.OUTPOST
         ),
 
-        Goal.PASSDEPOT   : (
-            None, None, None, None, 
+        Goal.AIMDEPOT : (
+            None, None, None, 
+            HoodSubsystem.SubsystemState.PASS, 
             TurretSubsystem.SubsystemState.DEPOT
         ),
 
@@ -85,7 +83,7 @@ class Superstructure(Subsystem):
             launcher: Optional[LauncherSubsystem] = None,
             hood: Optional[HoodSubsystem] = None,
             turret: Optional[TurretSubsystem] = None
-                 ) -> None:
+                ) -> None:
         """
         Constructs the superstructure using instance of each subsystem.
         Subsystems are optional to support robots that don't have all hardware.

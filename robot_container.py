@@ -41,6 +41,7 @@ class RobotContainer:
         print(f"Initializing RobotContainer for: {currentRobot.name}")
         self._max_speed = TunerConstants.speed_at_12_volts
         self._max_angular_rate = rotationsToRadians(1)
+
         if currentRobot == Robot.LARRY:
             self._max_speed = LarryTunerConstants.speed_at_12_volts
 
@@ -59,6 +60,7 @@ class RobotContainer:
         self.feeder: Optional[FeederSubsystem] = None
         self.launcher: Optional[LauncherSubsystem] = None
         self.turret: Optional[TurretSubsystem] = None
+
         match Constants.currentMode:
             case Constants.Mode.REAL:
                 # Real robot, instantiate hardware IO implementations
@@ -211,9 +213,13 @@ class RobotContainer:
     def _pathplanner_setup(self):
         # Register NamedCommands
         NamedCommands.registerCommand("Default", self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
-        NamedCommands.registerCommand("Score in Hub", self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH))
-        NamedCommands.registerCommand("Climb Ready", self.superstructure.set_goal_command(Superstructure.Goal.CLIMBREADY))
-        NamedCommands.registerCommand("Climb", self.superstructure.set_goal_command(Superstructure.Goal.CLIMB))
+        NamedCommands.registerCommand("Launch", self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH))
+        NamedCommands.registerCommand("Aim to Depot", self.superstructure.set_goal_command(Superstructure.Goal.AIMDEPOT))
+        NamedCommands.registerCommand("Aim to Outpost", self.superstructure.set_goal_command(Superstructure.Goal.AIMOUTPOST))
+        NamedCommands.registerCommand("Aim to Hub", self.superstructure.set_goal_command(Superstructure.Goal.AIMHUB))
+
+        NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
+        NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
 
         # Build AutoChooser
         self._auto_chooser: LoggedDashboardChooser[commands2.Command] = LoggedDashboardChooser("Auto")
