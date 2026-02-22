@@ -117,7 +117,6 @@ class LauncherIOTalonFX(LauncherIO):
 
     def setMotorRPS(self, rps: float) -> None:
         """Set the motor output velocity."""
-        print(f"Launcher setting motor RPS to {rps}")
         if rps == 0:
             self._voltageRequest = VoltageOut(0)
             self._main_motor.set_control(self._voltageRequest)
