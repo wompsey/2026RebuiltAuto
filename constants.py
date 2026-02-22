@@ -142,6 +142,7 @@ class Constants:
         MAX_MANUAL_VELOCITY = 20
         HARDCODED_POSITION = 0.05
         MAX_ROTATIONS = 0.054687567
+        MAX_DISTANCE_FOR_SLOW_LAUNCH = 2.55
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed

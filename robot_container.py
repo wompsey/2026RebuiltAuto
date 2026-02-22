@@ -292,6 +292,11 @@ class RobotContainer:
                 InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.INTAKE))).onFalse(
                     InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.STOP)))
 
+            Trigger(lambda: self._driver_controller.getRightTriggerAxis() > 0.75).whileTrue(
+                InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.OUTPUT))
+            ).onFalse(
+                InstantCommand(lambda: self.intake.set_desired_state(self.intake.SubsystemState.STOP))
+            )
         else:
             print("Intake subsystem not available on this robot, unable to bind intake buttons")
 

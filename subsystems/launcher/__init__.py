@@ -44,7 +44,7 @@ class LauncherSubsystem(StateSubsystem):
         # Meters per second
         SubsystemState.IDLE: 0, #velocityToWheelRPS(5.0),
         SubsystemState.SCORE: 30,#velocityToWheelRPS(12.26),
-        SubsystemState.PASS: velocityToWheelRPS(10.0),
+        SubsystemState.PASS: 50 #velocityToWheelRPS(10.0),
     }
 
     def __init__(self, io: LauncherIO, robot_pose_supplier: Callable[[], Pose2d]) -> None:
@@ -55,6 +55,7 @@ class LauncherSubsystem(StateSubsystem):
         self._robot_pose_supplier = robot_pose_supplier
         self._desired_projectile_velocity = 0.0
         self._desired_motorRPS = 0.0
+        self.distance = 1.0
         
         self._motorDisconnectedAlert = Alert("Launcher motor is disconnected.", Alert.AlertType.kError)
 
@@ -76,6 +77,11 @@ class LauncherSubsystem(StateSubsystem):
         # Update inputs from hardware/simulation
         self._io.updateInputs(self._inputs)
         
+        #desired_state = self.get_current_state()
+        #projectile_velocity = self.get_aim_velocity(desired_state)
+
+        #self._desired_motorRPS = projectile_velocity
+        #self._io.setMotorRPS(self._desired_motorRPS)
         # Log inputs to PyKit
         Logger.processInputs("Launcher", self._inputs)
 
@@ -93,14 +99,29 @@ class LauncherSubsystem(StateSubsystem):
         projectile_velocity = self._state_configs.get(
             desired_state, 
             0.0
-        )
-        #hard coded normal velo
-        #self._desired_projectile_velocity = projectile_velocity
-        # #self._desired_motorRPS = velocityToWheelRPS(projectile_velocity)
-        # self._desired_motorRPS = max(min(self._desired_motorRPS, 75.0), -75)  # Ensure non-negative RPS
-        
+        )#self.get_aim_velocity(desired_state)
+
         self._desired_motorRPS = projectile_velocity
         self._io.setMotorRPS(self._desired_motorRPS)
+
+    """def get_aim_velocity(self, state: SubsystemState) -> float:
+        if state == self.SubsystemState.SCORE:
+            self.distance = (self.robot_pose_supplier()
+                         .translation().distance(self.hub_pose.translation()))
+            velocity = self._state_configs.get(
+                state, 
+                0.0
+            )
+            if self.distance <= 3.25:
+                return velocity
+            else:
+                return velocity + 20.0
+            
+        else:
+            return self._state_configs.get(
+                state, 
+                0.0
+            )"""
 
     def find_position(self) -> float:
         return self._robot_pose_supplier().X

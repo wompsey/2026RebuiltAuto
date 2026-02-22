@@ -55,7 +55,11 @@ class HoodSubsystem(StateSubsystem):
 
     def interpolate(self) -> None:
         """Updates hood angle."""
-        self.target = 0.00000159885 * (self.distance ** 9.05419) 
+        if self.distance <= Constants.HoodConstants.MAX_DISTANCE_FOR_SLOW_LAUNCH:
+            self.target = 0.0000840628 * (self.distance ** 6.40933) 
+        else:
+            # TODO add second calculation for faster velocity
+            self.target = Constants.HoodConstants.MAX_ROTATIONS
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""
