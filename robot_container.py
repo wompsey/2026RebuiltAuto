@@ -340,7 +340,7 @@ class RobotContainer:
             )
 
             self._function_controller.a().onTrue(
-                self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH)
+                self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT)
             ).onFalse(self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
 
             Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(

@@ -139,7 +139,6 @@ class TurretIOTalonFX(TurretIO):
         elif rotations < self._zero_position:
             rotations = self._zero_position
             print("Turret position is too low, setting to zero")
-        print(f"Turret setting position to {rotations}, zero position is {self._zero_position}")
         self.position_request = PositionVoltage(rotations)
         self.turret_motor.set_control(self.position_request)
 

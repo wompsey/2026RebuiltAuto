@@ -58,8 +58,7 @@ class HoodSubsystem(StateSubsystem):
         if self.distance <= Constants.HoodConstants.MAX_DISTANCE_FOR_SLOW_LAUNCH:
             self.target = 0.0000840628 * (self.distance ** 6.40933) 
         else:
-            # TODO add second calculation for faster velocity
-            self.target = Constants.HoodConstants.MAX_ROTATIONS
+            self.target = 0.0000139591 * (self.distance ** 5.1281) 
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""

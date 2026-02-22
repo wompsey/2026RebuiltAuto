@@ -1,5 +1,6 @@
 from enum import auto, Enum
 
+from pathplannerlib.auto import FlippingUtil, AutoBuilder
 from pykit.autolog import autologgable_output
 from pykit.logger import Logger
 from wpilib import Alert
@@ -76,18 +77,33 @@ class LauncherSubsystem(StateSubsystem):
         """Called periodically to update inputs and log data."""
         # Update inputs from hardware/simulation
         self._io.updateInputs(self._inputs)
-        
-        #desired_state = self.get_current_state()
-        #projectile_velocity = self.get_aim_velocity(desired_state)
 
-        #self._desired_motorRPS = projectile_velocity
-        #self._io.setMotorRPS(self._desired_motorRPS)
+        # When in SCORE, adjust velocity by distance to hub (same as hood)
+        if self.get_current_state() == self.SubsystemState.SCORE:
+            hub_pose = (
+                Constants.FieldConstants.HUB_POSE
+                if not AutoBuilder.shouldFlip()
+                else FlippingUtil.flipFieldPose(Constants.FieldConstants.HUB_POSE)
+            )
+            self.distance = (
+                self._robot_pose_supplier()
+                .translation()
+                .distance(hub_pose.translation())
+            )
+            base_velocity = self._state_configs[self.SubsystemState.SCORE]
+            if self.distance > Constants.HoodConstants.MAX_DISTANCE_FOR_SLOW_LAUNCH:
+                self._desired_motorRPS = base_velocity + 10.0
+            else:
+                self._desired_motorRPS = base_velocity
+            self._io.setMotorRPS(self._desired_motorRPS)
+
         # Log inputs to PyKit
         Logger.processInputs("Launcher", self._inputs)
 
         # Log outputs to PyKit
         Logger.recordOutput("Launcher/Target Projectile Velocity", self._desired_projectile_velocity)
         Logger.recordOutput("Launcher/Target Motor RPS", self._desired_motorRPS)
+        Logger.recordOutput("Launcher/DistanceToHub", self.distance)
 
         # Update alerts
         self._motorDisconnectedAlert.set(not self._inputs.motorConnected)
