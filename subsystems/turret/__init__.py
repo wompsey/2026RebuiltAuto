@@ -97,7 +97,7 @@ class TurretSubsystem(StateSubsystem):
                 return Constants.GoalLocations.BLUE_OUTPOST_PASS if is_blue else Constants.GoalLocations.RED_OUTPOST_PASS
             case self.SubsystemState.DEPOT:
                 return Constants.GoalLocations.BLUE_DEPOT_PASS if is_blue else Constants.GoalLocations.RED_DEPOT_PASS
-            case self.SubsystemState.MANUAL:
+            case _:
                 return Constants.GoalLocations.BLUE_HUB  # fallback, caller should not use for MANUAL
 
     def rotate_to_goal(self, target: SubsystemState):
