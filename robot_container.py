@@ -312,11 +312,11 @@ class RobotContainer:
                 lambda: self.drivetrain.seed_field_centric()))
 
         if self.feeder is not None:
-            self._function_controller.leftBumper().whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
+            Trigger(lambda: self._function_controller.getRightTriggerAxis() > 0.75).whileTrue(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.INWARD))).onFalse(InstantCommand(lambda: self.feeder.set_desired_state(self.feeder.SubsystemState.STOP)))
         else:
             print("Feeder subsystem not available on this robot, unable to bind feeder buttons")
         if self.launcher is not None:
-            self._function_controller.rightBumper().whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
+            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE))).onFalse(InstantCommand(lambda: self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE)))
         else:
             print("Launcher subsystem not available on this robot, unable to bind launcher buttons")
         
@@ -343,34 +343,21 @@ class RobotContainer:
                 self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT)
             ).onFalse(self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
 
-            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).onTrue(
+            self._function_controller.back().onTrue(
                 InstantCommand(lambda: self.turret.set_desired_state(self.turret.SubsystemState.MANUAL)).alongWith(
                     InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.MANUAL))
                 )
             )
            
 
-            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
-                InstantCommand(lambda: self.turret.rotate_manually(self._function_controller.getRightX()))
-            )
-
-            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(
-                InstantCommand(lambda: self.hood.rotate_manually(self._function_controller.getRightY()))
+            self._function_controller.back().whileTrue(
+                InstantCommand(lambda: self.turret.rotate_manually(self._function_controller.getRightX())).alongWith(
+                    InstantCommand(lambda: self.hood.rotate_manually(self._function_controller.getRightY()))
+                    )
             )
            
-            #self._function_controller.getLeftTriggerAxis().onTrue(
         else:
             print("Turret or hood subsystem not available on this robot, unable to bind turret buttons")
-        
-        if self.hood is not None:
-            self._function_controller.povDown().onTrue(
-                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.STOW))
-            )
-            self._function_controller.povUp().onTrue(
-                InstantCommand(lambda: self.hood.set_desired_state(self.hood.SubsystemState.AIMBOT))
-            )
-        else:
-            print("Hood subsystem not available on this robot, unable to bind hood buttons")
 
         if self.climber is not None:
             self._function_controller.povUp().onTrue(
