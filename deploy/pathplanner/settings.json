@@ -2,7 +2,15 @@
   "robotWidth": 0.9398,
   "robotLength": 0.9398,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Babies",
+    "Blind",
+    "Elders'",
+    "Men",
+    "New Folder",
+    "StartIntakeEarly",
+    "Toddlers"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 2.75,
   "defaultMaxAccel": 6.0,
