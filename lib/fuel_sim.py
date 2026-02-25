@@ -227,7 +227,7 @@ RED_HUB = Hub(
 )
 
 
-@dataclass
+@dataclass(slots=True)
 class Fuel:
     """Fuel dataclass"""
     pos: Translation3d
@@ -237,15 +237,15 @@ class Fuel:
         """Update position, air resistance, and collisions."""
         self.pos += self.vel * (PERIOD / subticks)
         if self.pos.Z() > FUEL_RADIUS:
-            Fg = GRAVITY * FUEL_MASS
-            Fd = Translation3d()
+            fg = GRAVITY * FUEL_MASS
+            fd = Translation3d()
 
             if simulate_air_resistance:
                 speed = self.vel.norm()
                 if speed > 1e-6:
-                    Fd = self.vel * (-DRAG_FORCE_FACTOR * speed)
+                    fd = self.vel * (-DRAG_FORCE_FACTOR * speed)
 
-            accel = (Fg + Fd) / FUEL_MASS
+            accel = (fg + fd) / FUEL_MASS
             self.vel += accel * (PERIOD / subticks)
         if abs(self.vel.Z()) < 0.05 and self.pos.Z() <= FUEL_RADIUS + 0.03:
             self.vel = Translation3d(self.vel.X(), self.vel.Y(), 0)
@@ -293,10 +293,8 @@ class Fuel:
     def handle_field_collisions(self, subticks: int) -> None:
         """Self-explanatory."""
         # floor and bumps
-        for i in range(len(FIELD_XZ_LINES)):
-            self.handle_xz_line_collision(
-                FIELD_XZ_LINES[i][0], FIELD_XZ_LINES[i][1]
-            )
+        for _, line in enumerate(FIELD_XZ_LINES):
+            self.handle_xz_line_collision(line[0], line[1])
 
         # edges
         if self.pos.X() < FUEL_RADIUS and self.vel.X() < 0:
@@ -328,9 +326,9 @@ class Fuel:
         hub.handle_hub_interaction(self, subticks)
         hub.fuel_collide_side(self)
 
-        netCollision = hub.fuel_hit_net(self)
-        if netCollision != 0:
-            self.pos += Translation3d(netCollision, 0, 0)
+        net_collision = hub.fuel_hit_net(self)
+        if net_collision != 0:
+            self.pos += Translation3d(net_collision, 0, 0)
             self.vel = Translation3d(
                 -self.vel.X() * NET_COR, self.vel.Y() * NET_COR, self.vel.Z()
             )
@@ -462,11 +460,11 @@ class SimIntake:
     able_to_intake: Callable[[], bool] = field(default=lambda: True)
     callback: Callable[[], None] = field(default=lambda: None)
 
-    def shouldIntake(self,
-                     fuel: Fuel,
-                     robot_pose: Pose2d,
-                     bumper_height: meters
-                     ) -> bool:
+    def should_intake(self,
+                      fuel: Fuel,
+                      robot_pose: Pose2d,
+                      bumper_height: meters
+                      ) -> bool:
         """Check if we're able to intake the fuel."""
         if not self.able_to_intake() or fuel.pos.Z() > bumper_height:
             return False
@@ -583,6 +581,23 @@ class FuelSim:
                         )
                     )
                 )
+
+    def spawn_less_starting_fuel(self) -> None:
+        """Spawns less fuel in the neutral zone for performance’s sake."""
+        # Center fuel
+        center = Translation3d(FIELD_LENGTH / 2, FIELD_WIDTH / 2, FUEL_RADIUS)
+        self.fuels += [
+            Fuel(
+                center + Translation3d(
+                    x * (0.076 + 0.152 * j),
+                    y * (0.0254 + 0.076 + 0.152 * i),
+                    0
+                )
+            )
+            for i in range(2)
+            for j in range(2)
+            for x, y in [(1, 1), (-1, 1), (1, -1), (-1, -1)]
+        ]
 
     def log_fuels(self) -> None:
         """Adds array of `Translation3d`'s to NetworkTables at tableKey +
@@ -752,7 +767,7 @@ class FuelSim:
         robot = self.robot_pose_supplier()
         for intake in self.intakes:
             for i in reversed(range(len(fuels))):
-                if intake.shouldIntake(fuels[i], robot, self.bumper_height):
+                if intake.should_intake(fuels[i], robot, self.bumper_height):
                     fuels.pop(i)
 
     def handle_fuel_collisions(self, fuels: list[Fuel]) -> None:

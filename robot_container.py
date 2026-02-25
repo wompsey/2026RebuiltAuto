@@ -199,17 +199,22 @@ class RobotContainer:
         # Fuel simulation (for simulation testing)
         def get_field_speeds():
             state = self.drivetrain.get_state()
-            rotation = state.pose.rotation()
             speeds = state.speeds
-            return ChassisSpeeds.fromRobotRelativeSpeeds(speeds.vx, speeds.vy, speeds.omega, rotation)
+            return ChassisSpeeds.fromRobotRelativeSpeeds(
+                speeds.vx,
+                speeds.vy,
+                speeds.omega,
+                state.pose.rotation()
+            )
         self.fuel_sim = FuelSim()
-        self.fuel_sim.spawn_starting_fuel()
+        self.fuel_sim.spawn_less_starting_fuel()
+        self.fuel_sim.set_subticks(3)
         self.fuel_sim.register_robot(
             inchesToMeters(27),
             inchesToMeters(27),
             inchesToMeters(5),
             lambda: self.drivetrain.get_state().pose,
-            lambda: get_field_speeds()
+            get_field_speeds
         )
         self.fuel_sim.enable_air_resistance()
         if RobotBase.isSimulation():
