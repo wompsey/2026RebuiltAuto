@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AfterIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
           }
         },
         {
@@ -25,19 +37,25 @@
         {
           "type": "named",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Launch"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Default"
+            "waitTime": 7.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Under Trench2 prep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Under Trench2"
           }
         }
       ]

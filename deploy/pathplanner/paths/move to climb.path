@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5928774928774923,
-        "y": 7.394259259259258
+        "x": 2.210413105413105,
+        "y": 5.533746438746439
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.51548433048433,
-        "y": 8.130712250712243
+        "x": 2.255352966525678,
+        "y": 4.246579360541562
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shootDepot"
     },
     {
       "anchor": {
-        "x": 7.688589743589745,
-        "y": 1.0633475783475728
+        "x": 2.275014245014245,
+        "y": 3.7765954415954424
       },
       "prevControl": {
-        "x": 7.791951566951569,
-        "y": 6.8774501424501375
+        "x": 2.2454790743499435,
+        "y": 4.678488914722373
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AfterIntake"
+      "linkedName": "climb prep"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.40672501151543106,
-      "rotationDegrees": -87.97182332398064
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -88.40885972880542
+    "rotation": -179.2461516669292
   },
   "reversed": false,
   "folder": "StartIntakeEarly",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 137.86240522611178
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
