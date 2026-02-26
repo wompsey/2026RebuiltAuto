@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start Depot to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Depot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Start to Depot End"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to Depot End"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot End to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Extend"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Climb Start to Climb End"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Stow"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

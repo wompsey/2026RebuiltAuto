@@ -7,31 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench"
+            "pathName": "Start, Shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AfterIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot"
+            "name": "Aim to Hub"
           }
         },
         {
@@ -43,7 +25,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 8.0
+            "waitTime": 3.0
           }
         },
         {
@@ -55,25 +37,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "move to climb"
+            "pathName": "Shoot to Neutral Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Climber Extend"
+            "name": "Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Climb"
+            "pathName": "Neutral Start to Neutral End"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Climber Stow"
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral End to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         }
       ]

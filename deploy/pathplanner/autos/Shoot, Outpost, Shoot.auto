@@ -7,31 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench"
+            "pathName": "Start Outpost to Shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AfterIntake"
+            "name": "Aim to Hub"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Default"
+            "name": "Launch"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot"
+            "pathName": "Shoot to Outpost"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -43,7 +55,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 7.0
+            "waitTime": 3.0
           }
         },
         {
@@ -55,13 +67,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "Shoot(bottom) to climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Extend"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2"
+            "pathName": "Climb Start to Climb End"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Stow"
           }
         }
       ]

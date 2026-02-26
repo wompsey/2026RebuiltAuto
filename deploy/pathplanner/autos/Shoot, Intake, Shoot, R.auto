@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start Depot to Shoot"
+            "pathName": "Start Outpost to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -19,7 +25,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 2.0
           }
         },
         {
@@ -31,13 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "TrenchLPrep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of Under Trench2"
+            "pathName": "TrenchL"
           }
         },
         {
@@ -49,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Intake"
+            "pathName": "IntakeL"
           }
         },
         {
@@ -61,13 +67,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AfterIntake2"
+            "pathName": "IntakeReturn"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Trench2"
+            "pathName": "UnderTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start Outpost to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -79,37 +97,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "move to climb"
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Default"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber Extend"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber Stow"
           }
         }
       ]

@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         },
@@ -79,6 +85,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         },
@@ -92,6 +104,30 @@
           "type": "named",
           "data": {
             "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Move to ClimbR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Extend"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Stow"
           }
         }
       ]
