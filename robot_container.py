@@ -218,7 +218,7 @@ class RobotContainer:
         NamedCommands.registerCommand("Aim to Depot", self.superstructure.set_goal_command(Superstructure.Goal.AIMDEPOT))
         NamedCommands.registerCommand("Aim to Outpost", self.superstructure.set_goal_command(Superstructure.Goal.AIMOUTPOST))
         NamedCommands.registerCommand("Aim to Hub", self.superstructure.set_goal_command(Superstructure.Goal.AIMHUB))
-
+        NamedCommands.registerCommand("Intake", self.superstructure.set_goal_command(Superstructure.Goal.INTAKE))
         #NamedCommands.registerCommand("Climber Extend", self.climber.set_desired_state(self.climber.SubsystemState.EXTEND))
         #NamedCommands.registerCommand("Climber Stow", self.climber.set_desired_state(self.climber.SubsystemState.STOW))
 
