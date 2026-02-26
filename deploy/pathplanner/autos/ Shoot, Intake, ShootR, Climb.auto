@@ -1,0 +1,127 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start Outpost to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchLPrep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeReturn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "UnderTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start Outpost to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Launch"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Move to ClimbR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Extend"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climber Stow"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

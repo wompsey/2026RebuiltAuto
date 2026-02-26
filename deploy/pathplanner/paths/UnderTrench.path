@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.675669515669513,
-        "y": 1.0633475783475796
+        "x": 6.047720797720797,
+        "y": 0.572378917378918
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.629131054131054,
-        "y": 4.797293447293448
+        "x": 4.857485679573798,
+        "y": 0.5794682023407892
       },
       "isLocked": false,
-      "linkedName": "AfterIntake2"
+      "linkedName": "TrenchPrepL"
     },
     {
       "anchor": {
-        "x": 5.71179487179487,
-        "y": 7.433019943019944
+        "x": 3.5541168091168096,
+        "y": 0.6111396011396026
       },
       "prevControl": {
-        "x": 6.577450142450141,
-        "y": 4.887735042735044
+        "x": 4.5222589426779365,
+        "y": 0.5969448916771877
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchPrep"
+      "linkedName": "TrenchL"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.68308759420668
+    "rotation": -178.6677801461303
   },
   "reversed": false,
-  "folder": "RightSide",
+  "folder": "LeftSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -91.06091169026408
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

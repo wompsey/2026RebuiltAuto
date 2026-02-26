@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.675669515669513,
-        "y": 1.0633475783475796
+        "x": 2.313774928774929,
+        "y": 2.3941310541310554
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.629131054131054,
-        "y": 4.797293447293448
+        "x": 2.2565253596392645,
+        "y": 2.6374877611144067
       },
       "isLocked": false,
-      "linkedName": "AfterIntake2"
+      "linkedName": "ShootL"
     },
     {
       "anchor": {
-        "x": 5.71179487179487,
-        "y": 7.433019943019944
+        "x": 1.9317976190476198,
+        "y": 3.70027380952381
       },
       "prevControl": {
-        "x": 6.577450142450141,
-        "y": 4.887735042735044
+        "x": 2.1610909890001286,
+        "y": 2.5898470911828486
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchPrep"
+      "linkedName": "ClimbR"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.68308759420668
+    "rotation": -177.5804907833437
   },
   "reversed": false,
-  "folder": "RightSide",
+  "folder": "LeftSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -91.06091169026408
+    "rotation": -147.60015982608073
   },
   "useDefaultConstraints": true
 }

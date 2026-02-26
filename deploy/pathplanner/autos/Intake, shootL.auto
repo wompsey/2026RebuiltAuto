@@ -47,6 +47,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Under Trench2 prep"
