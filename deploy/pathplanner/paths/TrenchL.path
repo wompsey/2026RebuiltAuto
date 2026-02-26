@@ -8,42 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7949470948983977,
-        "y": 0.13214315260401377
+        "x": 4.55411680911681,
+        "y": 0.6111396011396024
       },
       "isLocked": false,
       "linkedName": "TrenchL"
     },
     {
       "anchor": {
-        "x": 2.313774928774929,
-        "y": 2.3941310541310554
+        "x": 7.688589743589743,
+        "y": 0.7403418803418822
       },
       "prevControl": {
-        "x": 2.1540428329501973,
-        "y": 2.6811542073686403
+        "x": 6.688589743589743,
+        "y": 0.7403418803418823
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootL"
+      "linkedName": "IntakePrepL"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [
+  "rotationTargets": [
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1200.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -178.18781036123906
     }
   ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -56,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -147.60015982608073
+    "rotation": 91.27303002005688
   },
   "reversed": false,
   "folder": "LeftSide",

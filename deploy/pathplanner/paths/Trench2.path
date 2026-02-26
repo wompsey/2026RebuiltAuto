@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6445584045584045,
-        "y": 7.239216524216524
+        "x": 5.71179487179487,
+        "y": 7.433019943019944
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.915883190883191,
-        "y": 7.700641025641025
+        "x": 3.7866809116809117,
+        "y": 7.239216524216524
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "TrenchPrep"
     },
     {
       "anchor": {
@@ -20,30 +20,21 @@
         "y": 5.533746438746439
       },
       "prevControl": {
-        "x": 2.0295299145299137,
-        "y": 5.218450142450143
+        "x": 2.5850997150997155,
+        "y": 7.962749287749288
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "shootDepot"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [
+  "rotationTargets": [
     {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 720.0,
-        "maxAngularAcceleration": 1200.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -176.7226754155435
     }
   ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -62,7 +53,7 @@
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -178.68308759420668
   },
   "useDefaultConstraints": true
 }

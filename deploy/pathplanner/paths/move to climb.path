@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.210413105413105,
+        "y": 5.533746438746439
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.255352966525678,
+        "y": 4.246579360541562
+      },
+      "isLocked": false,
+      "linkedName": "shootDepot"
+    },
+    {
+      "anchor": {
+        "x": 2.275014245014245,
+        "y": 3.7765954415954424
+      },
+      "prevControl": {
+        "x": 2.2454790743499435,
+        "y": 4.678488914722373
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "climb prep"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.75,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -179.2461516669292
+  },
+  "reversed": false,
+  "folder": "RightSide",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 137.86240522611178
+  },
+  "useDefaultConstraints": false
+}
