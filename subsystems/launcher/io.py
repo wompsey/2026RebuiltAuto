@@ -9,7 +9,7 @@ from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, MotorAlignmentValue, InvertedValue
 
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius
+from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians
 from wpimath.system.plant import DCMotor, LinearSystemId
 from wpimath.controller import PIDController
 from wpilib.simulation import FlywheelSim
@@ -132,7 +132,7 @@ class LauncherIOSim(LauncherIO):
 
     def __init__(self) -> None:
         """Initialize the simulation IO."""
-        self._motorType = DCMotor.krakenX44FOC(2) 
+        self._motorType = DCMotor.krakenX44FOC(2)
 
         linearSystem = LinearSystemId.flywheelSystem(
             self._motorType,
@@ -151,7 +151,7 @@ class LauncherIOSim(LauncherIO):
                             LauncherConstants.GAINS.k_i / (2*pi),
                             LauncherConstants.GAINS.k_d / (2*pi),
                             0.02)
-                        
+
     def updateInputs(self, inputs: LauncherIO.LauncherIOInputs) -> None:
         """Update inputs with simulated state."""
 
@@ -176,4 +176,4 @@ class LauncherIOSim(LauncherIO):
 
     def setMotorRPS(self, rps: float) -> None:
         """Set the motor output velocity."""
-        self._controller.setSetpoint(rps)
+        self._controller.setSetpoint(rotationsToRadians(rps))
