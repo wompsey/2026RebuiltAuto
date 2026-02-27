@@ -203,6 +203,7 @@ class TurretIOSim(TurretIO):
         inputs.turret_applied_volts = self.applied_volts
         inputs.turret_current = abs(self.turretSim.getCurrentDraw())
         inputs.turret_temperature = 25.0  # Room temperature
+        inputs.turret_setpoint = self.controller.getSetpoint()
 
 
     def set_open_loop(self, output):

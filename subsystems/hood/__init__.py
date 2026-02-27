@@ -83,10 +83,10 @@ class HoodSubsystem(StateSubsystem):
         Logger.recordOutput("Hood/Distance", self.distance)
         Logger.recordOutput("Hood/Target", self.target)
 
+        super().periodic()
+
     def set_desired_state(self, desired_state: SubsystemState) -> None:
-        """set state"""
-        if not super().set_desired_state(desired_state):
-            return
+        super().set_desired_state(desired_state)
 
         self._auto_aim, hood_pos = self._state_configs.get(desired_state, 0.0)
         self.io.set_position(hood_pos)
