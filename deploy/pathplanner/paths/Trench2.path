@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7866809116809117,
-        "y": 7.239216524216524
+        "x": 3.67039886039886,
+        "y": 7.76894586894587
       },
       "isLocked": false,
       "linkedName": "TrenchPrep"
@@ -20,8 +20,8 @@
         "y": 5.533746438746439
       },
       "prevControl": {
-        "x": 2.5850997150997155,
-        "y": 7.962749287749288
+        "x": 2.520498575498576,
+        "y": 7.122934472934474
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": -176.7226754155435
+      "rotationDegrees": -89.41980940640634
     }
   ],
   "constraintZones": [],
@@ -47,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 137.86240522611178
+    "rotation": 124.62415507994895
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.68308759420668
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

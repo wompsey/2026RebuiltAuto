@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.702495402387825,
-        "y": 3.7222401862959638
+        "x": 1.4569517909699192,
+        "y": 3.7420084727141054
       },
       "isLocked": false,
       "linkedName": "Climb Start"
@@ -20,8 +20,8 @@
         "y": 3.737834757834759
       },
       "prevControl": {
-        "x": 1.6970929597365838,
-        "y": 3.7152008213241294
+        "x": 1.9555932503770141,
+        "y": 3.7368438605968004
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.75,
+    "maxVelocity": 0.75,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1200.0,
@@ -56,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.9949139947459
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.49297093908524
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

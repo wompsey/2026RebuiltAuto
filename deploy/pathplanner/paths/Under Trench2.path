@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.583833333333334,
-        "y": 7.468642857142857
+        "x": 4.199844866795749,
+        "y": 7.455887555433343
       },
       "isLocked": false,
       "linkedName": "UnderTrench2"
     },
     {
       "anchor": {
-        "x": 6.913376068376068,
+        "x": 7.662749287749287,
         "y": 7.468642857142857
       },
       "prevControl": {
-        "x": 5.913376068376068,
-        "y": 7.468642857142857
+        "x": 5.705669621688385,
+        "y": 7.478476513129117
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.755884120829
+    "rotation": 106.606
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.10357386578437
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

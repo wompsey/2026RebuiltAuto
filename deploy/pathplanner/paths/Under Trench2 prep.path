@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8945702927243615,
-        "y": 7.694407849401392
+        "x": 2.8985814625912942,
+        "y": 6.4725384727534445
       },
       "isLocked": false,
       "linkedName": "shootDepot"
@@ -20,8 +20,8 @@
         "y": 7.468642857142857
       },
       "prevControl": {
-        "x": 3.3512692307692316,
-        "y": 7.158557387057388
+        "x": 3.4060254049390313,
+        "y": 7.2366357029871
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.10357386578437
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 137.86240522611178
+    "rotation": 124.62415507994895
   },
   "useDefaultConstraints": true
 }

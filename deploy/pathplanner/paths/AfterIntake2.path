@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.629131054131054,
-        "y": 4.797293447293448
+        "x": 7.623988603988604,
+        "y": 3.169344729344731
       },
       "isLocked": false,
       "linkedName": "AfterIntake2"
@@ -20,8 +20,8 @@
         "y": 7.433019943019944
       },
       "prevControl": {
-        "x": 6.577450142450141,
-        "y": 4.887735042735044
+        "x": 8.050356125356124,
+        "y": 7.63974358974359
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.68308759420668
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -91.06091169026408
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
