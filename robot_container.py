@@ -423,5 +423,20 @@ class RobotContainer:
         return self.hood is not None
 
     def get_component_poses(self) -> list[Pose3d]:
-        turret = self.turret.get_component_pose()
-        return [turret, self.hood.get_component_pose(turret)]#self.climber.get_component_pose() (crashed stuff)
+
+        if self.turret is not None:
+            turret_pose = self.turret.get_component_pose()
+
+            if self.hood is not None:
+                hood_pose = self.hood.get_component_pose(turret_pose)
+            else:
+                hood_pose = Pose3d(0, 0, 0)
+        else:
+            turret_pose = Pose3d(0, 0, 0)
+
+        if self.climber is not None:
+            climber_pose = self.climber.get_component_pose()
+        else:
+            climber_pose = Pose3d(0, 0, 0)
+
+        return [turret_pose, hood_pose, climber_pose]
