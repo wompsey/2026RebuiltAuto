@@ -7,7 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start Depot to Shoot"
+            "pathName": "Under Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AfterIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -15,13 +33,11 @@
           "data": {
             "name": "Launch"
           }
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Score Only OutpostR.auto
-========
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 5.0
           }
         },
         {
@@ -35,7 +51,6 @@
           "data": {
             "pathName": "Move to Neutral"
           }
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Neutral.auto
         }
       ]
     }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5838333333333336,
-        "y": 7.468642857142857
+        "x": 2.300854700854701,
+        "y": 6.296039886039887
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9272338643270555,
-        "y": 6.566107397196089
+        "x": 1.4388796245490056,
+        "y": 6.854826973600751
       },
       "isLocked": false,
-      "linkedName": "UnderTrench2"
+      "linkedName": "shootDepot"
     },
     {
       "anchor": {
-        "x": 2.210413105413105,
-        "y": 5.533746438746439
+        "x": 0.41450142450142446,
+        "y": 7.536381766381767
       },
       "prevControl": {
-        "x": 2.826163010959903,
-        "y": 6.373523840652539
+        "x": 0.6590378592093666,
+        "y": 7.379412612670995
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootDepot"
+      "linkedName": "outpost"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.75,
+    "maxVelocity": 1.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1200.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 137.86240522611178
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.10357386578437
+    "rotation": 125.00000000000001
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

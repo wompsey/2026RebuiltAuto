@@ -25,13 +25,19 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 8.0
+            "waitTime": 5.0
           }
         },
         {

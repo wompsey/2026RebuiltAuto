@@ -13,25 +13,25 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Move to Neutral For Intake"
+            "pathName": "Shoot to Depot"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Intake"
+            "pathName": "Depot Start to Depot End"
           }
         },
         {
@@ -55,7 +55,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AfterIntake"
+            "pathName": "Depot to Depot End"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot End to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -67,13 +79,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "move to climb"
+            "pathName": "Shoot to Climb"
           }
         },
         {
@@ -83,27 +95,14 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Shoot, Intake, climbL.auto
-            "name": "Climber Extend"
-========
-            "pathName": "Climb"
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Climb.auto
+            "pathName": "Climb Start to Climb End"
           }
         },
         {
           "type": "named",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Shoot, Intake, climbL.auto
-            "pathName": "Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-========
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Climb.auto
             "name": "Climber Stow"
           }
         }

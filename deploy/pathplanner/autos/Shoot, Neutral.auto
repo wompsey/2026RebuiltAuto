@@ -13,10 +13,14 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Score Only OutpostR.auto
-========
         },
         {
           "type": "wait",
@@ -35,7 +39,6 @@
           "data": {
             "pathName": "Move to Neutral"
           }
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Neutral.auto
         }
       ]
     }

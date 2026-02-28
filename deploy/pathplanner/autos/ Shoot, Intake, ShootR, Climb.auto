@@ -31,6 +31,7 @@
         {
           "type": "path",
           "data": {
+<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
             "pathName": "TrenchLPrep"
           }
         },
@@ -38,6 +39,9 @@
           "type": "path",
           "data": {
             "pathName": "TrenchL"
+========
+            "pathName": "Move to Neutral For Intake"
+>>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
           }
         },
         {
@@ -61,6 +65,7 @@
         {
           "type": "path",
           "data": {
+<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
             "pathName": "IntakeReturn"
           }
         },
@@ -68,6 +73,9 @@
           "type": "path",
           "data": {
             "pathName": "UnderTrench"
+========
+            "pathName": "AfterIntake"
+>>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
           }
         },
         {
@@ -89,14 +97,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Default"
-          }
-        },
-        {
           "type": "path",
           "data": {
+<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
             "pathName": "Move to ClimbR"
           }
         },
@@ -116,6 +119,9 @@
           "type": "named",
           "data": {
             "name": "Climber Stow"
+========
+            "pathName": "Move to Neutral"
+>>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
           }
         }
       ]

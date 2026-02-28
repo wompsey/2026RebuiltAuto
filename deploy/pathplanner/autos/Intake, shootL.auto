@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "Default"
           }
         },
         {
@@ -25,25 +25,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Default"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Launch"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 7.0
+            "waitTime": 5.0
           }
         },
         {
@@ -55,13 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Under Trench2"
+            "pathName": "Move to Neutral"
           }
         }
       ]

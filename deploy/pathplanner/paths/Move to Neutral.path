@@ -8,34 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-<<<<<<< Updated upstream
-        "x": 2.255352966525678,
-        "y": 4.246579360541562
-=======
-        "x": 2.3140603921889245,
-        "y": 6.046388910242905
->>>>>>> Stashed changes
+        "x": 3.0373076923076927,
+        "y": 7.83354700854701
       },
       "isLocked": false,
       "linkedName": "shootDepot"
     },
     {
       "anchor": {
-        "x": 2.287934472934473,
-        "y": 4.138361823361825
+        "x": 8.489643874643875,
+        "y": 7.342578347578348
       },
       "prevControl": {
-<<<<<<< Updated upstream
-        "x": 2.2454790743499435,
-        "y": 4.678488914722373
-=======
-        "x": 2.3004436058115574,
-        "y": 4.3880486704216235
->>>>>>> Stashed changes
+        "x": 4.561894586894587,
+        "y": 7.471780626780627
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "climb prep"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -43,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.75,
+    "maxVelocity": 2.0,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1200.0,
@@ -52,17 +42,21 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.2461516669292
+<<<<<<< Updated upstream:deploy/pathplanner/paths/Shoot.path
+    "rotation": 137.86240522611178
+=======
+    "rotation": 125.00000000000001
+>>>>>>> Stashed changes:deploy/pathplanner/paths/Move to Neutral.path
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-<<<<<<< Updated upstream
-    "rotation": 137.86240522611178
+<<<<<<< Updated upstream:deploy/pathplanner/paths/Shoot.path
+    "rotation": -179.10357386578437
 =======
     "rotation": 125.00000000000001
->>>>>>> Stashed changes
+>>>>>>> Stashed changes:deploy/pathplanner/paths/Move to Neutral.path
   },
   "useDefaultConstraints": false
 }

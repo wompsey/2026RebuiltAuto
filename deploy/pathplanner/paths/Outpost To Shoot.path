@@ -3,38 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.287934472934473,
-        "y": 4.138361823361825
+        "x": 0.41450142450142446,
+        "y": 7.536381766381767
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.80988603988604,
-        "y": 4.125441595441596
+        "x": 1.5441335580800701,
+        "y": 6.874828858067403
       },
       "isLocked": false,
-      "linkedName": "climb prep"
+      "linkedName": "outpost"
     },
     {
       "anchor": {
-<<<<<<< Updated upstream
-        "x": 1.4610398860398859,
-        "y": 3.7765954415954424
+        "x": 2.300854700854701,
+        "y": 6.296039886039887
       },
       "prevControl": {
-        "x": 1.771125356125356,
-        "y": 3.7765954415954424
-=======
-        "x": 1.3964387464387464,
-        "y": 4.138361823361825
-      },
-      "prevControl": {
-        "x": 1.7065242165242165,
-        "y": 4.138361823361825
->>>>>>> Stashed changes
+        "x": 1.96013119485866,
+        "y": 6.498689882267936
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shootDepot"
     }
   ],
   "rotationTargets": [],
@@ -51,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 178.60281897270363
+    "rotation": 125.00000000000001
   },
   "reversed": false,
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.2461516669292
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
