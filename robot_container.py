@@ -205,7 +205,7 @@ class RobotContainer:
                 state.pose.rotation()
             )
         self.fuel_sim = FuelSim()
-        if not RobotBase.isSimulation():
+        if RobotBase.isSimulation():
             self.fuel_sim.spawn_starting_fuel()
             self.fuel_sim.register_robot(
                 inchesToMeters(27),
