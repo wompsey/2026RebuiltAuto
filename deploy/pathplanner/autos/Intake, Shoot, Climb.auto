@@ -13,13 +13,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Default"
+            "name": "Intake"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "AfterIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot"
           }
         },
         {

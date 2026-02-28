@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start Outpost to Shoot"
+            "pathName": "Start Depot to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -31,13 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchLPrep"
+            "pathName": "Under Trench2 prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TrenchL"
+            "pathName": "Under Trench2"
           }
         },
         {
@@ -49,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeL"
+            "pathName": "Intake"
           }
         },
         {
@@ -61,19 +67,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeReturn"
+            "pathName": "AfterIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "UnderTrench"
+            "pathName": "Shoot"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Start Outpost to Shoot"
+            "name": "Aim to Hub"
           }
         },
         {
@@ -85,13 +91,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Default"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Under Trench2 prep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Under Trench2"
           }
         }
       ]

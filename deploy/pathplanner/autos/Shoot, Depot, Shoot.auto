@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start Outpost to Shoot"
+            "pathName": "Start Depot to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
           }
         },
         {
@@ -19,29 +25,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
-            "pathName": "TrenchLPrep"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TrenchL"
-========
-            "pathName": "Move to Neutral For Intake"
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
+            "pathName": "Shoot to Depot"
           }
         },
         {
@@ -53,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeL"
+            "pathName": "Depot Start to Depot End"
           }
         },
         {
@@ -65,23 +55,19 @@
         {
           "type": "path",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
-            "pathName": "IntakeReturn"
+            "pathName": "Depot to Depot End"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "UnderTrench"
-========
-            "pathName": "AfterIntake"
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
+            "pathName": "Depot End to Shoot"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Start Outpost to Shoot"
+            "name": "Aim to Hub"
           }
         },
         {
@@ -93,14 +79,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/ Shoot, Intake, ShootR, Climb.auto
-            "pathName": "Move to ClimbR"
+            "pathName": "Shoot to Climb"
           }
         },
         {
@@ -112,16 +97,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbR"
+            "pathName": "Climb Start to Climb End"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Climber Stow"
-========
-            "pathName": "Move to Neutral"
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Neutral.auto
           }
         }
       ]

@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Launch"
           }
         },
@@ -31,7 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move to Neutral For Intake"
+            "pathName": "Under Trench2 prep"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Under Trench2"
           }
         },
         {
@@ -59,6 +71,18 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Aim to Hub"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Launch"
@@ -68,6 +92,12 @@
           "type": "wait",
           "data": {
             "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Default"
           }
         },
         {
@@ -83,27 +113,14 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Shoot, Intake, climbL.auto
-            "name": "Climber Extend"
-========
-            "pathName": "Climb"
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Climb.auto
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-<<<<<<<< Updated upstream:deploy/pathplanner/autos/Shoot, Intake, climbL.auto
             "pathName": "Climb"
           }
         },
         {
           "type": "named",
           "data": {
-========
->>>>>>>> Stashed changes:deploy/pathplanner/autos/Shoot, Intake, Shoot, Climb.auto
             "name": "Climber Stow"
           }
         }
