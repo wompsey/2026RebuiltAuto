@@ -90,6 +90,11 @@ class Dwayne(LoggedRobot):
         SignalLogger.stop()
         wpilib.LiveWindow.disableAllTelemetry()
 
+        # We can check ourselves if we're overrunning
+        # And the warning it prints is laggy, so this makes it only tell us if
+        # We're REALLY lagging
+        CommandScheduler.getInstance().setPeriod(1.0)
+
         dashboard_nt = NetworkTableInstance.getDefault().getTable("Elastic")
         self._match_time_pub = dashboard_nt.getFloatTopic("Match Time").publish()
 
