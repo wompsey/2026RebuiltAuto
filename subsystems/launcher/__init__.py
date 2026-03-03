@@ -1,18 +1,16 @@
-from enum import auto, Enum
+from enum import IntEnum, auto
+from math import pi
+from typing import Callable, Final
 
 from pathplannerlib.auto import FlippingUtil, AutoBuilder
-from pykit.autolog import autologgable_output
 from pykit.logger import Logger
 from wpilib import Alert
-from typing import Callable, Final, Optional
+from wpimath.geometry import Pose2d
+
+from constants import Constants, Optional
 from subsystems import StateSubsystem
 from subsystems.launcher.io import LauncherIO, LauncherIOTalonFX, LauncherIOSim
-from wpimath.geometry import Pose2d
-from commands2.button import Trigger
-from commands2 import InstantCommand
-from math import pi
 
-from constants import Constants
 LauncherConstants = Constants.LauncherConstants
 GeneralConstants = Constants.GeneralConstants
 
@@ -36,16 +34,16 @@ class LauncherSubsystem(StateSubsystem):
     The LauncherSubsystem is responsible for controlling the end effector's compliant wheels.
     """
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         IDLE = auto()
         SCORE = auto()
         PASS = auto()
 
     _state_configs: dict[SubsystemState, float] = {
         # Meters per second
-        SubsystemState.IDLE: 0, #velocityToWheelRPS(5.0),
-        SubsystemState.SCORE: 30,#velocityToWheelRPS(12.26),
-        SubsystemState.PASS: 50 #velocityToWheelRPS(10.0),
+        SubsystemState.IDLE: 0.0, #velocityToWheelRPS(5.0),
+        SubsystemState.SCORE: 30.0,#velocityToWheelRPS(12.26),
+        SubsystemState.PASS: 50.0 #velocityToWheelRPS(10.0),
     }
 
     def __init__(self, io: LauncherIO, robot_pose_supplier: Callable[[], Pose2d]) -> None:

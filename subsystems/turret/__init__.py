@@ -1,19 +1,20 @@
-from enum import auto, Enum
-from pykit.logger import Logger
-from wpilib import Alert
-from typing import Final, Callable, Optional
-from constants import Constants
-from subsystems import Subsystem
-from subsystems.turret.io import TurretIO
+from enum import IntEnum, auto
 from math import atan2, pi, radians as deg_to_rad
+from typing import Final, Callable, Optional
+
+from pykit.logger import Logger
+from wpilib import Alert, DriverStation
 from wpimath.geometry import Pose2d, Rotation2d, Pose3d, Rotation3d
 from wpimath.units import rotationsToRadians
-from wpilib import DriverStation
+
+from constants import Constants
 from subsystems import StateSubsystem
+from subsystems.turret.io import TurretIO
+
 
 class TurretSubsystem(StateSubsystem):
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         MANUAL = auto()
         HUB = auto()
         DEPOT = auto()
@@ -56,9 +57,9 @@ class TurretSubsystem(StateSubsystem):
 
         # Log inputs to PyKit
         Logger.processInputs("Turret", self.inputs)
-        Logger.recordOutput("Turret/X Distance", self.x)
-        Logger.recordOutput("Turret/Y Distance", self.y)
-        Logger.recordOutput("Turret/Robot Current Radians", self.current_radians)
+        #Logger.recordOutput("Turret/X Distance", self.x)
+        #Logger.recordOutput("Turret/Y Distance", self.y)
+        #Logger.recordOutput("Turret/Robot Current Radians", self.current_radians)
         Logger.recordOutput("Turret/Target Radians", self.target_radians)
 
         # Update alerts

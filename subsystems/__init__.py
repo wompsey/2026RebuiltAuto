@@ -7,7 +7,7 @@ New feature list for 2026:
 - Improved state transitioning (`on_state_change` and `self.last_state`)
 - Minor type checking
 """
-from enum import Enum
+from enum import IntEnum
 
 from commands2 import Command
 from commands2.subsystem import Subsystem
@@ -17,7 +17,7 @@ from pykit.logger import Logger
 class StateSubsystem(Subsystem):
     """Base class for subsystems that operate with distinct states."""
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         """
         Possible state subsystem states.
         Subclasses need to override this enum.

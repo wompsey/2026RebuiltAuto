@@ -1,26 +1,24 @@
 import math
-from enum import auto, Enum
+from enum import auto, IntEnum
 from typing import Optional, Callable, TYPE_CHECKING
 
 from commands2 import Command, Subsystem, cmd
 from pathplannerlib.auto import AutoBuilder
+from pykit.logger import Logger
 from wpilib import DriverStation
 from wpimath.geometry import Pose2d
 from wpimath.kinematics import ChassisSpeeds
 
-from subsystems.intake import IntakeSubsystem
+from constants import Constants
 from subsystems.feeder import FeederSubsystem
-from subsystems.launcher import LauncherSubsystem
 from subsystems.hood import HoodSubsystem
+from subsystems.intake import IntakeSubsystem
+from subsystems.launcher import LauncherSubsystem
 from subsystems.turret import TurretSubsystem
 from subsystems.aiming import (
     ShooterAimingTable,
     get_aiming_parameters,
 )
-
-from pykit.logger import Logger
-
-from constants import Constants
 
 if TYPE_CHECKING:
     from subsystems.swerve import SwerveSubsystem
@@ -31,7 +29,7 @@ class Superstructure(Subsystem):
     The Superstructure is in charge of handling all subsystems to ensure no conflicts between them.
     """
 
-    class Goal(Enum):
+    class Goal(IntEnum):
         DEFAULT     = auto()  # Default goal
         INTAKE      = auto()  # Intaking fuel from the floor.  This goal may be removed
         LAUNCH      = auto()  # Scoring fuel into the hub

@@ -4,7 +4,7 @@ Contains the drivetrain, built off CTRE's Swerve Project Generator.
 import ctypes
 import math
 from dataclasses import dataclass, field
-from typing import Callable, overload, Self
+from typing import Callable, overload, Self, List
 
 from commands2 import Command, Subsystem
 from commands2.sysid import SysIdRoutine
@@ -17,6 +17,7 @@ from phoenix6.phoenix_native import (SwerveDriveState_t, SwerveModuleState_t,
                                      SwerveModulePosition_t, Native)
 from phoenix6.swerve import SwerveModuleState
 from phoenix6.swerve.requests import ApplyRobotSpeeds
+from pykit.autolog import autologgable_output, autolog_output
 from pykit.logger import Logger
 from wpilib import DriverStation, Notifier, RobotController
 from wpilib.sysid import SysIdRoutineLog
@@ -33,6 +34,7 @@ else:
     from generated.tuner_constants import TunerSwerveDrivetrain
 
 
+@autologgable_output
 class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
     """
     Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -60,7 +62,7 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
             self.pose = Pose2d(
                 state.pose.x,
                 state.pose.y,
-                Rotation2d(state.pose.theta)
+                state.pose.theta
             )
             self.speeds = ChassisSpeeds(
                 state.speeds.vx,
@@ -297,6 +299,7 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
         """
         return self._sys_id_routine_to_apply.dynamic(direction)
 
+    @autolog_output("Drive/State")
     def get_cached_state(self) -> SwerveDriveState:
         """
         Returns the current state of the drivetrain.
@@ -315,6 +318,16 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
         velocity_vector = Translation2d(robot_speeds.vx, robot_speeds.vy)
         field_velocity = velocity_vector.rotateBy(robot_rotation)
         return ChassisSpeeds(field_velocity.X(), field_velocity.Y(), robot_speeds.omega)
+
+    @autolog_output("Drive/Modules/States")
+    def _get_module_states(self) -> List[SwerveModuleState]:
+        """Returns the measured module states."""
+        return self._module_states
+
+    @autolog_output("Drive/Modules/Targets")
+    def _get_module_targets(self) -> List[SwerveModuleState]:
+        """Returns the desired module targets."""
+        return self._module_targets
 
     def periodic(self):
         # Periodically try to apply the operator perspective.
@@ -347,9 +360,7 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
             self._drivetrain_id, ctypes.byref(self._c_state)
         )
         self._swerve_state._update_from_native(self._c_state)
-        Logger.recordOutput("Drive/State", self._swerve_state)
 
-        # Mutate pre-allocated lists, no allocation
         for ms, mt, cs, ct in zip(
                 module_states,
                 module_targets,
@@ -360,9 +371,6 @@ class SwerveSubsystem(Subsystem, swerve.SwerveDrivetrain):
             ms.angle = Rotation2d(cs.angle)
             mt.speed = ct.speed
             mt.angle = Rotation2d(ct.angle)
-
-        Logger.recordOutput("Drive/Modules/States", module_states)
-        Logger.recordOutput("Drive/Modules/Targets", module_targets)
 
     def _start_sim_thread(self):
         def _sim_periodic():

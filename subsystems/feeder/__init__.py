@@ -1,16 +1,11 @@
-import importlib.util
-import sys
-from pathlib import Path
+from enum import IntEnum, auto
+from typing import Final
 
-from subsystems.feeder.io import FeederIO, FeederIOTalonFX, FeederIOSim
-from enum import auto, Enum
-
-from pykit.autolog import autologgable_output
 from pykit.logger import Logger
 from wpilib import Alert
-from typing import Final
-from constants import Constants
+
 from subsystems import StateSubsystem
+from subsystems.feeder.io import FeederIO, FeederIOTalonFX, FeederIOSim
 
 __all__ = ["FeederIO", "FeederIOTalonFX", "FeederIOSim", "FeederSubsystem"]
 
@@ -19,7 +14,7 @@ class FeederSubsystem(StateSubsystem):
     The FeederSubsystem is responsible for storage and feeding game pieces into the launcher.
     """
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         STOP = auto()
         INWARD = auto()
 

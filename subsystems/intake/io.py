@@ -27,7 +27,7 @@ class IntakeIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class IntakeIOInputs:
         """Inputs from the intake hardware/simulation."""
         # Motor status
@@ -150,7 +150,7 @@ class IntakeIOSim(IntakeIO):
 
     def updateInputs(self, inputs: IntakeIO.IntakeIOInputs) -> None:
         """Update inputs with simulated state."""
-        
+
         self._simMotor.update(0.02)
 
         if self._closedLoop:

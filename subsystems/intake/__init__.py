@@ -1,8 +1,9 @@
-from enum import auto, Enum
+from enum import IntEnum, auto
+from typing import Final
 
 from pykit.logger import Logger
 from wpilib import Alert
-from typing import Final
+
 from subsystems import StateSubsystem
 from subsystems.intake.io import IntakeIO, IntakeIOSim, IntakeIOTalonFX
 
@@ -12,7 +13,7 @@ class IntakeSubsystem(StateSubsystem):
     The IntakeSubsystem is responsible for controlling the end effector's compliant wheels.
     """
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         STOP = auto()
         INTAKE = auto()
         OUTPUT = auto()
