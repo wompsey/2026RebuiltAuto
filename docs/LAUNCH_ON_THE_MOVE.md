@@ -19,11 +19,11 @@ The turret lead for a moving shot uses the robot’s velocity in **field** frame
 RPM and hood angle come only from a **distance-based lookup table** with linear interpolation between points. There are no zones or polynomial fits.
 
 - **Location:** `subsystems/aiming.py` — `ShooterAimingTable`
-- **Storage:** Two internal tables: distance (m) → launcher **RPS** (rotations per second), and distance (m) → hood angle (**radians**).
+- **Storage:** Two internal tables: distance (m) → launcher **RPS** (rotations per second), and distance (m) → hood angle (**rotations**, motor units).
 - **API:**
   - `put_rpm(distance_m: float, rps: float)` — add/update one (distance, RPS) sample
-  - `put_hood(distance_m: float, hood_radians: float)` — add/update one (distance, hood rad) sample
-  - `get_settings(distance_m: float) -> {"rpm": rps, "hood": hood_rad}` — interpolated values for that distance (clamped outside table range)
+  - `put_hood(distance_m: float, hood_rotations: float)` — add/update one (distance, hood rotations) sample
+  - `get_settings(distance_m: float) -> {"rpm": rps, "hood": hood_rotations}` — interpolated values for that distance (clamped outside table range)
 
 Out-of-range distances are clamped to the min/max table values. The table is seeded with defaults in `_seed_defaults()` until you replace them with tuned data.
 
@@ -37,8 +37,8 @@ Aiming setpoints are computed from a **virtual goal** so that when the robot is 
   1. **Time of flight:** `ToF = distance_to_real_goal / nominal_ball_velocity`
   2. **Virtual goal:** \( G_{virtual} = G_{real} - (\vec{V}_{robot} \times \text{ToF}) \)
   3. **Virtual distance** and **virtual angle** from robot to virtual goal
-  4. **LUT lookup:** `aiming_table.get_settings(virtual_dist)` → RPS and hood (rad)
-- **Output:** `AimingParameters(turret_angle_rad, virtual_dist_m, rps, hood_rad)`
+  4. **LUT lookup:** `aiming_table.get_settings(virtual_dist)` → RPS and hood (rotations)
+- **Output:** `AimingParameters(turret_angle_rad, virtual_dist_m, rps, hood_rotations)`
 
 When the robot is stationary, field speed is zero so the virtual goal equals the real goal. Nominal ball velocity is set in `subsystems/aiming.py` as `NOMINAL_BALL_VELOCITY_MPS` (default 12.0 m/s); tune from testing if needed.
 
@@ -78,7 +78,7 @@ The aiming system is fully driven by `ShooterAimingTable`. Until you add tuned d
    - Record:
      - **Distance** in **meters**.
      - **Launcher RPS** (rotations per second of the flywheel — this is what `LauncherSubsystem` uses, not RPM).
-     - **Hood angle** in **radians**. If you log or tune in degrees, convert: `hood_rad = hood_deg * (π / 180)`.
+     - **Hood angle** in **rotations** (motor units). If you log in degrees, convert: `hood_rot = (hood_deg / 360)`; if the motor reports rotations, use that directly.
 
 3. **Optional**
    - Estimate **nominal ball exit velocity** (m/s) from distance and time, or from your physics model, and update `NOMINAL_BALL_VELOCITY_MPS` in `subsystems/aiming.py` for better SOTM ToF.
@@ -100,9 +100,9 @@ from subsystems.aiming import ShooterAimingTable
 
 def create_tuned_aiming_table() -> ShooterAimingTable:
     table = ShooterAimingTable()
-    # Replace with your (distance_m, RPS, hood_rad) from testing:
+    # Replace with your (distance_m, RPS, hood_rotations) from testing:
     table.put_rpm(1.0, 28.0)   # 1 m: launcher RPS
-    table.put_hood(1.0, 0.002) # 1 m: hood angle (rad)
+    table.put_hood(1.0, 0.002) # 1 m: hood angle (rotations)
     table.put_rpm(2.0, 32.0)
     table.put_hood(2.0, 0.02)
     table.put_rpm(2.55, 32.0)
@@ -124,7 +124,7 @@ self.superstructure = Superstructure(
 
 **Option B — Tuned table in a constants/config module:**
 
-1. Add a module (e.g. `config/aiming_config.py` or in `constants.py`) that defines a function returning a `ShooterAimingTable()` with `put_rpm` / `put_hood` for every (distance_m, RPS, hood_rad) triplet from your sheet.
+1. Add a module (e.g. `config/aiming_config.py` or in `constants.py`) that defines a function returning a `ShooterAimingTable()` with `put_rpm` / `put_hood` for every (distance_m, RPS, hood_rotations) triplet from your sheet.
 2. In `robot_container.py`, import that function and pass `aiming_table=create_tuned_aiming_table()` (or similar) into `Superstructure`.
 
 Use **Option A** for a single robot; use **Option B** if you want to share or switch configs (e.g. by robot or event).
@@ -135,7 +135,7 @@ Use **Option A** for a single robot; use **Option B** if you want to share or sw
 |---------------|---------|--------------------------------------------|
 | Distance      | meters  | Same reference as `aim_pose_supplier` (e.g. turret center to hub). |
 | Launcher speed| RPS     | Rotations per second (not RPM).            |
-| Hood angle    | radians | Convert from degrees: `rad = deg * (π / 180)`. |
+| Hood angle    | rotations | Motor units; use same units as hood sensor/encoder. |
 | Nominal velocity | m/s  | In `aiming.py`: `NOMINAL_BALL_VELOCITY_MPS`. |
 
 ### Step 4: Add More Points
@@ -150,8 +150,8 @@ Use **Option A** for a single robot; use **Option B** if you want to share or sw
 | Component     | Role |
 |--------------|------|
 | **Drivetrain** | `get_field_relative_speeds()` for SOTM lead. |
-| **ShooterAimingTable** | Single source of (distance → RPS, distance → hood rad); linear interpolation. |
-| **get_aiming_parameters()** | Virtual goal + ToF; returns turret angle, virtual dist, RPS, hood rad. |
+| **ShooterAimingTable** | Single source of (distance → RPS, distance → hood rotations); linear interpolation. |
+| **get_aiming_parameters()** | Virtual goal + ToF; returns turret angle, virtual dist, RPS, hood rotations. |
 | **Superstructure** | Runs aiming when goal is LAUNCH/AIMHUB; pushes setpoints to turret, hood, launcher. |
 | **Turret / Hood / Launcher** | Use only the setpoints from superstructure (with minimal fallbacks when unset). |
 

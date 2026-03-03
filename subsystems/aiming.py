@@ -11,8 +11,6 @@ from typing import Callable
 from wpimath.geometry import Pose2d
 from wpimath.kinematics import ChassisSpeeds
 
-from constants import Constants
-
 
 def _linear_interp(x: float, xs: list[float], ys: list[float]) -> float:
     """Linear interpolation. Clamps to [min(ys), max(ys)] if x outside [min(xs), max(xs)]."""
@@ -35,7 +33,7 @@ class ShooterAimingTable:
     Replaces zone-based logic to avoid jumps. Populate with golden samples from stationary tuning.
     """
     def __init__(self) -> None:
-        # (distance_m, value) sorted by distance. Hood in radians to match hood subsystem.
+        # (distance_m, value) sorted by distance. Hood in rotations (motor units).
         self._rpm_dist: list[float] = []
         self._rpm_val: list[float] = []
         self._hood_dist: list[float] = []
@@ -43,27 +41,23 @@ class ShooterAimingTable:
         self._seed_defaults()
 
     def _seed_defaults(self) -> None:
-        """Seed with current zone boundaries so behavior matches until tuning data is added."""
-        h = Constants.HoodConstants
-        # Distances (m) and approximate values from existing zone logic
-        self._rpm_dist = [1.0, h.MAX_DISTANCE_FOR_SLOW_LAUNCH, h.MAX_DISTANCE_FOR_MEDIUM_LAUNCH, 4.0]
-        self._rpm_val = [30.0, 30.0, 35.0, 40.0]  # RPS baseline from launcher _state_configs
-        self._hood_dist = [1.0, h.MAX_DISTANCE_FOR_SLOW_LAUNCH, h.MAX_DISTANCE_FOR_MEDIUM_LAUNCH, 4.0]
-        # Hood angles in radians (from interpolate(): ~0.000084*d^6.4 at 2.55, 0.036 at mid, ~0.000014*d^5.1 at 2.9+)
-        self._hood_val = [
-            0.0000840628 * (1.0 ** 6.40933),
-            0.0000840628 * (h.MAX_DISTANCE_FOR_SLOW_LAUNCH ** 6.40933),
-            0.03637695313,
-            0.0000139591 * (4.0 ** 5.1281),
-        ]
+        """Seed with tuned values from stationary testing (distance m, hood rotations, flywheel RPS)."""
+        # From testing: Distance (m), Hood (rotations), Flywheel (RPS)
+        distance = [1.7, 2.56, 3.5, 4.49, 5.365]
+        hood_rotations = [0.02026367188, 0.0048828125, 0.0068359375, 0.02026367188, 0.03100585938]
+        flywheel_rps = [28.0, 30.0, 35.0, 38.0, 44.0]
+        self._rpm_dist = list(distance)
+        self._rpm_val = list(flywheel_rps)
+        self._hood_dist = list(distance)
+        self._hood_val = list(hood_rotations)
 
     def put_rpm(self, distance_m: float, rpm: float) -> None:
         """Add or update one RPM sample (distance in meters)."""
         self._add_sample(distance_m, rpm, self._rpm_dist, self._rpm_val)
 
-    def put_hood(self, distance_m: float, hood_radians: float) -> None:
-        """Add or update one hood angle sample (distance in meters, hood in radians)."""
-        self._add_sample(distance_m, hood_radians, self._hood_dist, self._hood_val)
+    def put_hood(self, distance_m: float, hood_rotations: float) -> None:
+        """Add or update one hood angle sample (distance in meters, hood in rotations)."""
+        self._add_sample(distance_m, hood_rotations, self._hood_dist, self._hood_val)
 
     def _add_sample(self, x: float, y: float, xs: list[float], ys: list[float]) -> None:
         if not xs or x < xs[0]:
@@ -84,7 +78,7 @@ class ShooterAimingTable:
                 return
 
     def get_settings(self, distance_m: float) -> dict[str, float]:
-        """Returns {'rpm': RPS (wheel), 'hood': hood angle radians} for the given distance."""
+        """Returns {'rpm': RPS (wheel), 'hood': hood angle in rotations} for the given distance."""
         return {
             "rpm": _linear_interp(distance_m, self._rpm_dist, self._rpm_val),
             "hood": _linear_interp(distance_m, self._hood_dist, self._hood_val),
@@ -97,7 +91,7 @@ class AimingParameters:
     turret_angle_rad: float
     virtual_dist_m: float
     rps: float  # launcher wheel RPS (from LUT, same units as LauncherSubsystem.desired_motorRPS)
-    hood_rad: float
+    hood_rotations: float  # hood angle in rotations (motor units)
 
 
 # Default nominal exit velocity (m/s) for time-of-flight. Tune from testing.
@@ -137,5 +131,5 @@ def get_aiming_parameters(
         turret_angle_rad=virtual_angle,
         virtual_dist_m=virtual_dist,
         rps=settings["rpm"],
-        hood_rad=settings["hood"],
+        hood_rotations=settings["hood"],
     )

@@ -51,11 +51,11 @@ class HoodSubsystem(StateSubsystem):
         #self.hub_pose = Constants.FieldConstants.HUB_POSE  # blue hub
         self.distance = 1.0
         self.target = 1.0
-        self._aiming_hood_setpoint: Optional[float] = None  # From unified aiming LUT (rad)
+        self._aiming_hood_setpoint: Optional[float] = None  # From unified aiming LUT (rotations)
 
-    def set_aiming_setpoint(self, hood_rad: Optional[float]) -> None:
-        """Set hood angle from unified aiming LUT (rad)."""
-        self._aiming_hood_setpoint = hood_rad
+    def set_aiming_setpoint(self, hood_rotations: Optional[float]) -> None:
+        """Set hood angle from unified aiming LUT (rotations, motor units)."""
+        self._aiming_hood_setpoint = hood_rotations
 
     def periodic(self) -> None:
         """Runs stuff periodically (every 20 ms)."""

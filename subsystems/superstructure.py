@@ -1,3 +1,4 @@
+import math
 from enum import auto, Enum
 from typing import Optional, Callable, TYPE_CHECKING
 
@@ -77,21 +78,21 @@ class Superstructure(Subsystem):
             None, None, None,
             HoodSubsystem.SubsystemState.AIMBOT,
             TurretSubsystem.SubsystemState.HUB,
-            False
+            True  # track so aiming block runs and DistanceToHub is updated
         ),
 
         Goal.AIMOUTPOST : (
             None, None, None,
             HoodSubsystem.SubsystemState.PASS,
             TurretSubsystem.SubsystemState.OUTPOST,
-            False
+            True
         ),
 
         Goal.AIMDEPOT : (
             None, None, None,
             HoodSubsystem.SubsystemState.PASS,
             TurretSubsystem.SubsystemState.DEPOT,
-            False
+            True
         ),
 
     }
@@ -129,6 +130,8 @@ class Superstructure(Subsystem):
         self._turret_check = False
         self._hood_check = False
         self._flywheel_check = False
+        self._distance_to_hub = 0.0
+        self._virtual_distance_m = 0.0
 
         self._checks_override = False
 
@@ -148,16 +151,22 @@ class Superstructure(Subsystem):
                 if self._drivetrain is not None
                 else ChassisSpeeds(0.0, 0.0, 0.0)
             )
+            robot_pose = self._aim_pose_supplier()
             params = get_aiming_parameters(
-                robot_pose=self._aim_pose_supplier(),
+                robot_pose=robot_pose,
                 field_speeds=field_speeds,
                 real_goal_pose=real_goal,
                 aiming_table=self._aiming_table,
             )
+            self._distance_to_hub = math.hypot(
+                real_goal.X() - robot_pose.X(),
+                real_goal.Y() - robot_pose.Y(),
+            )
+            self._virtual_distance_m = params.virtual_dist_m
             if self.turret is not None:
                 self.turret.set_target_field_angle(params.turret_angle_rad)
             if self.hood is not None:
-                self.hood.set_aiming_setpoint(params.hood_rad)
+                self.hood.set_aiming_setpoint(params.hood_rotations)
             if self.launcher is not None:
                 self.launcher.set_aiming_setpoint(params.rps)
         else:
@@ -201,11 +210,16 @@ class Superstructure(Subsystem):
                     self.feeder.set_desired_state(FeederSubsystem.SubsystemState.STOP)
                     self.feeder.lock()
 
+            case self.Goal.AIMHUB | self.Goal.AIMOUTPOST | self.Goal.AIMDEPOT:
+                pass  # aiming block above handles setpoints; no feeder logic
+
         Logger.recordOutput("Superstructure/Goal State", self._goal_state.name)
         Logger.recordOutput("Superstructure/Turret Check", self._turret_check)
         Logger.recordOutput("Superstructure/Hood Check", self._hood_check)
         Logger.recordOutput("Superstructure/Flywheel Check", self._flywheel_check)
         Logger.recordOutput("Superstructure/Overridden", self._checks_override)
+        Logger.recordOutput("Superstructure/DistanceToHub", self._distance_to_hub)
+        Logger.recordOutput("Superstructure/VirtualDistance", self._virtual_distance_m)
 
 
     def _set_goal(self, goal: Goal) -> None:
