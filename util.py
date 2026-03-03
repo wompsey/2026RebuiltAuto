@@ -21,7 +21,7 @@ def get_game_phase() -> tuple[str, int]:
     """
     game_message = DriverStation.getGameSpecificMessage() # Returns the winning alliance for auto as either R or B
  
-    match_time = DriverStation.getMatchTime()
+    match_time = int(DriverStation.getMatchTime())
     if DriverStation.isAutonomous():
         return "Autonomous", match_time
     
