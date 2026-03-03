@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench"
+            "pathName": "Under Trench Intake"
           }
         },
         {
@@ -61,13 +61,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "Under Trench Prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2"
+            "pathName": "Under Trench"
           }
         }
       ]

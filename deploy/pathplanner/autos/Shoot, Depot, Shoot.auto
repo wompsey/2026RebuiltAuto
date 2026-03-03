@@ -85,13 +85,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "Under Trench Prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2"
+            "pathName": "Under Trench"
           }
         }
       ]

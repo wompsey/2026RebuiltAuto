@@ -37,25 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "Under Trench Prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intake"
+            "pathName": "Under Trench Intake"
           }
         },
         {
@@ -103,13 +91,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2 prep"
+            "pathName": "Under Trench Prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Under Trench2"
+            "pathName": "Under Trench"
           }
         }
       ]

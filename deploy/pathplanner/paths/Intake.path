@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.623988603988604,
-        "y": 7.468642857142857
+        "x": 7.4689458689522334,
+        "y": 7.575142450142451
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.636908831908833,
-        "y": 6.657806267806268
+        "x": 7.5034593750035,
+        "y": 6.761934716390425
       },
       "isLocked": false,
       "linkedName": "IntakePrep"
@@ -20,8 +20,8 @@
         "y": 4.538888888888889
       },
       "prevControl": {
-        "x": 7.688589743589743,
-        "y": 4.97817663817664
+        "x": 7.710009179353046,
+        "y": 4.789984135507059
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.75,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.467,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1200.0,
+    "maxAngularAcceleration": 900.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -48,7 +48,7 @@
   "folder": "RightSide",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
