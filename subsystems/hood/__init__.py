@@ -4,15 +4,14 @@ Hood subsystem
 TO DO:
 Integrate positions for passing (may switch to state subsystem for this)
 """
-from enum import Enum, auto
-from math import atan, sqrt, degrees
+from enum import IntEnum, auto
 from typing import Callable
 
 from pathplannerlib.auto import FlippingUtil, AutoBuilder
 from pykit.logger import Logger
 from wpilib import Alert, DriverStation
 from wpimath.geometry import Pose2d, Pose3d, Rotation3d
-from wpimath.units import degreesToRotations, rotationsToRadians
+from wpimath.units import rotationsToRadians
 
 from constants import Constants
 from subsystems import StateSubsystem
@@ -23,7 +22,7 @@ from subsystems.hood.io import HoodIO
 class HoodSubsystem(StateSubsystem):
     """State Subsystem for hood."""
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         """Hood states."""
         AIMBOT = auto()
         STOW = auto()

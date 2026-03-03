@@ -24,7 +24,7 @@ class ClimberIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class ClimberIOInputs:
         """Inputs from the climber hardware/simulation."""
         # Motor status

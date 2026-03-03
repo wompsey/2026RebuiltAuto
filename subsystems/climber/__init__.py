@@ -1,26 +1,23 @@
-from enum import auto, Enum
+from enum import IntEnum, auto
 from typing import Final
 
-from pykit.autolog import autologgable_output
 from pykit.logger import Logger
 from wpilib import Alert
 from wpimath.geometry import Pose3d
 
 from constants import Constants
 from subsystems import StateSubsystem
-
 from subsystems.climber.io import ClimberIO, ClimberIOTalonFX, ClimberIOSim
 
 __all__ = ["ClimberIO", "ClimberIOTalonFX", "ClimberIOSim", "ClimberSubsystem"]
 
-@autologgable_output
 class ClimberSubsystem(StateSubsystem):
     """
     The ClimberSubsystem is responsible for controlling the robot's climber mechanism.
     Uses PyKit IO layer for hardware abstraction.
     """
 
-    class SubsystemState(Enum):
+    class SubsystemState(IntEnum):
         STOW = auto()
         EXTEND = auto()
 

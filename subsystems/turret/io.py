@@ -25,7 +25,7 @@ class TurretIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class TurretIOInputs:
         """Inputs from the Turret hardware/simulation."""
         # Motor status

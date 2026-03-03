@@ -14,7 +14,7 @@ from pykit.autolog import autolog
 from wpilib.simulation import DCMotorSim
 from wpimath.controller import PIDController
 from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.units import radians, radiansToRotations, volts, amperes, rotationsToRadians
+from wpimath.units import radians, radiansToRotations, volts, amperes, rotationsToRadians, radians_per_second
 
 from constants import Constants
 from util import tryUntilOk
@@ -27,12 +27,13 @@ class HoodIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class HoodIOInputs:
         """Inputs from the hood hardware/simulation."""
         # Motor status
         hood_connected: bool = False
         hood_position: radians = 0.0
+        hood_velocity: radians_per_second = 0.0
         hood_applied_volts: volts = 0.0
         hood_current: amperes = 0.0
         hood_temperature: celsius = 0.0
