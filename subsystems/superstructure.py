@@ -3,7 +3,7 @@ from typing import Optional
 
 from commands2 import Command, Subsystem, cmd
 from pykit.logger import Logger
-from wpilib import DriverStation
+from wpilib import DriverStation, Timer
 
 from constants import Constants
 from subsystems.feeder import FeederSubsystem
@@ -123,6 +123,10 @@ class Superstructure(Subsystem):
 
         self._checks_override = False
 
+        # Prevents loop overruns shooting a fuel way below minimum speed.
+        self._time_since_last_goal = Timer()
+        self._time_since_last_goal.start()
+
     def periodic(self):
         if DriverStation.isDisabled():
             return
@@ -143,10 +147,15 @@ class Superstructure(Subsystem):
                     self.feeder.set_desired_state(FeederSubsystem.SubsystemState.INWARD)
 
             case self.Goal.LAUNCH:
-                if (self._turret_check and self._hood_check and self._flywheel_check) or self._checks_override:
+                if (
+                        (
+                                self._turret_check
+                                and self._hood_check
+                                and self._flywheel_check
+                                and self._time_since_last_goal.get() > 0.5
+                        ) or self._checks_override ):
                     self.feeder.unlock()
                     self.feeder.set_desired_state(FeederSubsystem.SubsystemState.INWARD)
-
                 else:
                     self.feeder.set_desired_state(FeederSubsystem.SubsystemState.STOP)
                     self.feeder.lock()
@@ -155,11 +164,10 @@ class Superstructure(Subsystem):
         Logger.recordOutput("Superstructure/Turret Check", self._turret_check)
         Logger.recordOutput("Superstructure/Hood Check", self._hood_check)
         Logger.recordOutput("Superstructure/Flywheel Check", self._flywheel_check)
-        Logger.recordOutput("Superstructure/Overridden", self._checks_override)
+        #Logger.recordOutput("Superstructure/Overridden", self._checks_override)
 
 
     def _set_goal(self, goal: Goal) -> None:
-
         intake_state, feeder_state, launcher_state, hood_state, turret_state, superstructure_state = self._goal_to_states.get(goal, (None, None, None, None, None, False))
 
         if not intake_state is None:
@@ -179,6 +187,7 @@ class Superstructure(Subsystem):
 
         if superstructure_state:
             self._goal_state = goal
+            self._time_since_last_goal.reset()
 
     def _set_override(self) -> None:
         self._checks_override = not self._checks_override
