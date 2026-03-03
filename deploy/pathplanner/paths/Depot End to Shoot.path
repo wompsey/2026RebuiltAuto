@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.4946581196581197,
-        "y": 6.205598290598291
+        "x": 2.520498575498576,
+        "y": 6.128076923076923
       },
       "prevControl": {
-        "x": 2.0553944094329686,
-        "y": 6.6523569682748676
+        "x": 2.0812108262108264,
+        "y": 6.270199430199431
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shoot2"
+      "linkedName": "shootDepot"
     }
   ],
   "rotationTargets": [],
@@ -56,7 +56,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 144.86580694308435
+    "rotation": 125.00000000000001
   },
   "reversed": false,
   "folder": null,

@@ -37,31 +37,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move to Neutral For Intake"
+            "pathName": "Move to Outpost"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AfterIntake"
+            "pathName": "Outpost To Shoot"
           }
         },
         {
@@ -79,31 +67,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "move to climb"
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Climber Extend"
+            "name": "Default"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Climb"
+            "pathName": "Under Trench2 prep"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Climber Stow"
+            "pathName": "Under Trench2"
           }
         }
       ]

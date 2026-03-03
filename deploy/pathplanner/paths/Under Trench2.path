@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.662749287749287,
+        "x": 7.623988603988604,
         "y": 7.468642857142857
       },
       "prevControl": {
-        "x": 5.705669621688385,
+        "x": 5.666908937927701,
         "y": 7.478476513129117
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "IntakePrep"
     }
   ],
   "rotationTargets": [],
@@ -33,10 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.75,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.75,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1200.0,
+    "maxAngularAcceleration": 900.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

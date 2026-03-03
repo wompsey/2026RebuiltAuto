@@ -85,25 +85,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber Extend"
+            "pathName": "Under Trench2 prep"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Climb Start to Climb End"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climber Stow"
+            "pathName": "Under Trench2"
           }
         }
       ]
