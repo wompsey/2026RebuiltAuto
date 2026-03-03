@@ -27,6 +27,16 @@ class Constants:
 
     FIELD_LAYOUT: Final[AprilTagFieldLayout] = AprilTagFieldLayout.loadField(AprilTagField.k2026RebuiltWelded)
 
+    # Turret center is this many meters behind robot center (negative = behind in robot +X forward)
+    TURRET_OFFSET = -0.1524 #6"
+    """
+    Limelight: (meters)
+    0.2794 = 11" height
+    0.276225 = 10.875 forward
+    -0.0762 = 3" to the left (approx)
+
+    """
+
     # Hardware configurations
     # Can ids are to be set in the same order as they are wired in the CAN bus
     class CanIDs:
@@ -78,7 +88,7 @@ class Constants:
         FLYWHEEL_RADIUS = None
         FEED_FORWARD = None
         MAX_RPS = None
-
+        SETPOINT_TOLERANCE = 3
 
     class FeederConstants:
         GEAR_RATIO = None
@@ -112,28 +122,32 @@ class Constants:
 
     class TurretConstants:
         GAINS = (Slot0Configs()
-                .with_k_p(14.0)
+                .with_k_p(8.3)
                 .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.5)
+                .with_k_d(1.29)
+                .with_k_s(0.469)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
             )
         GEAR_RATIO = 170/36
         SUPPLY_CURRENT = 40
-        MOI = .455
+        MOI = 0.093001732
         MAX_ROTATIONS = 0.865967
         MAX_MANUAL_VELOCITY = 20  # rad/sec
+        SETPOINT_TOLERANCE = 0.167
+        MM_VELOCITY = 1
+        MM_ACCELERATION = 20
         # Only switch to other side of center when goal is at least this many degrees past middle
         CROSS_MIDDLE_HYSTERESIS_DEGREES = 5.0
+        
 
     class HoodConstants:
-        GEAR_RATIO = 68/3
+        GEAR_RATIO = 68/3  
         GAINS = (Slot0Configs()
-                .with_k_p(65.0)
+                .with_k_p(150)
                 .with_k_i(0.0)
-                .with_k_d(0.0)
-                .with_k_s(0.38)
+                .with_k_d(4.0)
+                .with_k_s(0.5)
                 .with_k_v(0.0)
                 .with_k_a(0.0)
         )
@@ -146,6 +160,7 @@ class Constants:
         MAX_ROTATIONS = 0.054687567
         MAX_DISTANCE_FOR_SLOW_LAUNCH = 2.55
         MAX_DISTANCE_FOR_MEDIUM_LAUNCH = 2.90
+        SETPOINT_TOLERANCE = 0.67
 
     class FieldConstants:
         HUB_POSE = Pose2d(4.625594, 4.034536, 0.0)  # blue hub, flip when needed

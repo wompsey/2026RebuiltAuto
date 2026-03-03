@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5541168091168096,
-        "y": 0.6111396011396026
+        "x": 3.675824436536181,
+        "y": 0.6297153024911029
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7949470948983977,
-        "y": 0.13214315260401377
+        "x": 3.922235276963079,
+        "y": 0.1524065954421141
       },
       "isLocked": false,
-      "linkedName": "TrenchL"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 2.3941310541310554
       },
       "prevControl": {
-        "x": 2.1540428329501973,
-        "y": 2.6811542073686403
+        "x": 2.1708808748565787,
+        "y": 2.685685297979652
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,24 +45,31 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Aim to Hub",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.75,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 1.75,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1200.0,
+    "maxAngularAcceleration": 900.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -147.60015982608073
+    "rotation": -141.31499557227417
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.6677801461303
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
