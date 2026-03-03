@@ -168,12 +168,12 @@ class Constants:
 
     class GoalLocations:
         BLUE_HUB = Pose2d(4.625594, 4.034536, 0)
-        BLUE_DEPOT_PASS = Pose2d(4.020286, 0, 0)
-        BLUE_OUTPOST_PASS = Pose2d(4.020286, 8.069072, 0)
+        BLUE_DEPOT_PASS = Pose2d(2.312797, 2.017268, 0)
+        BLUE_OUTPOST_PASS = Pose2d(2.312797, 6.051804, 0)
 
         RED_HUB = Pose2d(11.915394, 4.034536, 180)
-        RED_DEPOT_PASS = Pose2d(12.517591, 8.069072, 180)
-        RED_OUTPOST_PASS = Pose2d(12.517591, 0, 180)
+        RED_DEPOT_PASS = Pose2d(14.228191, 6.051804, 180)
+        RED_OUTPOST_PASS = Pose2d(14.228191, 2.017268, 180)
 
 
 

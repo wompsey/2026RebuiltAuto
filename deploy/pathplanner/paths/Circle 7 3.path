@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.645973871036521,
-        "y": 1.2759478748740238
+        "x": 6.368017118402282,
+        "y": 0.6256633380884447
       },
       "isLocked": false,
       "linkedName": "Circle 7 W2"
@@ -20,28 +20,28 @@
         "y": 0.5709156626506025
       },
       "prevControl": {
-        "x": 5.302131558013023,
-        "y": 0.4427293908892832
+        "x": 5.707922360755265,
+        "y": 0.5439953400829602
       },
       "nextControl": {
-        "x": 3.9976245134368265,
-        "y": 0.7003062602495504
+        "x": 3.52151212553495,
+        "y": 0.5997860199714709
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.2978915662650605,
+        "x": 3.276036144578313,
         "y": 2.537903614457831
       },
       "prevControl": {
-        "x": 3.9472603893360354,
-        "y": 1.627395479723519
+        "x": 2.565734939759036,
+        "y": 1.1500843373493967
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Circle 7 W3"
     }
   ],
   "rotationTargets": [
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 49.22818270516166
+    "rotation": 52.23415103503757
   },
   "reversed": false,
   "folder": "Circle 7",
