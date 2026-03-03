@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.215555555552686,
+        "y": 5.9601139601139606
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4710038325790227,
+        "y": 5.756541105266258
+      },
+      "isLocked": false,
+      "linkedName": "Depot Start"
+    },
+    {
+      "anchor": {
+        "x": 2.4946581196581197,
+        "y": 6.205598290598291
+      },
+      "prevControl": {
+        "x": 2.0553944094329686,
+        "y": 6.6523569682748676
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "shoot2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.44455494778717075,
+      "maxWaypointRelativePos": 0.9776230730979609,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1200.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.75,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 144.86580694308435
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.10482628978895
+  },
+  "useDefaultConstraints": true
+}

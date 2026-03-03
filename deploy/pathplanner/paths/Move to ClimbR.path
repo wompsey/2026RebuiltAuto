@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.313774928774929,
+        "y": 2.3941310541310554
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2565253596392645,
+        "y": 2.6374877611144067
+      },
+      "isLocked": false,
+      "linkedName": "ShootL"
+    },
+    {
+      "anchor": {
+        "x": 1.9317976190476198,
+        "y": 3.70027380952381
+      },
+      "prevControl": {
+        "x": 2.1610909890001286,
+        "y": 2.5898470911828486
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ClimbR"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.75,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1200.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -177.5804907833437
+  },
+  "reversed": false,
+  "folder": "LeftSide",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -147.60015982608073
+  },
+  "useDefaultConstraints": true
+}
