@@ -34,35 +34,37 @@ def get_game_phase() -> tuple[str, int]:
         case x if x <= 30.0:
             return "E (Active)", match_time
         case x if 30.0 < x <= 55.0:
-            if is_blue and game_message == "B":
-                return "S4 (Active)", match_time - 30.0
-            elif not is_blue and game_message == "R":
-                return "S4 (Inactive)", match_time - 30.0
-            else:
-                return "S4 (Unknown)", match_time - 30.0
+            status = hub_status(True, game_message, is_blue)
+            return f"S4 ({status})", match_time - 30.0
         case x if 55.0 < x <= 80.0:
-            if is_blue and game_message == "R":
-                return "S3 (Active)", match_time - 55.0
-            elif not is_blue and game_message == "B":
-                return "S3 (Inactive)", match_time - 55.0
-            else:
-                return "S3 (Unknown)", match_time - 55.0
+            status = hub_status(False, game_message, is_blue)
+            return f"S3 ({status})", match_time - 55.0
         case x if 80.0 < x <= 105.0:
-            if is_blue and game_message == "B":
-                return "S2 (Active)", match_time - 80.0
-            elif not is_blue and game_message == "R":
-                return "S2 (Inactive)", match_time - 80.0
-            else:
-                return "S2 (Unknown)", match_time - 80.0
+            status = hub_status(True, game_message, is_blue)
+            return f"S2 ({status})", match_time - 80.0
         case x if 105.0 < x <= 130.0:
-            if is_blue and game_message == "R":
-                return "S1 (Active)", match_time - 105.0
-            elif not is_blue and game_message == "B":
-                return "S1 (Inactive)", match_time - 105.0
-            else:
-                return "S1 (Unknown)", match_time - 105.0
+            status = hub_status(False, game_message, is_blue)
+            return f"S1 ({status})", match_time - 105.0
         case _:
             return "T (Active)", match_time - 130.0
+
+def hub_status(winner_active, game_message, is_blue):
+    """
+    Returns the status of the hub based on the winner active and winner.
+    """
+    if not game_message:
+        return "Unknown"
+
+    if winner_active and game_message == "B" and is_blue:
+        return "Active"
+    elif winner_active and game_message == "R" and not is_blue:
+        return "Active"
+    elif not winner_active and game_message == "B" and not is_blue:
+        return "Active"
+    elif not winner_active and game_message == "R" and is_blue:
+        return "Active"
+    else:
+        return "Inactive"
 
 def make_turret_pose_supplier(
     robot_pose_supplier: Callable[[], Pose2d],

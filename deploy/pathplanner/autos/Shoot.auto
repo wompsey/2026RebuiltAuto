@@ -7,31 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start Depot to Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aim to Hub"
+            "pathName": "Start Outpost to Shoot"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Launch"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Default"
           }
         }
       ]
