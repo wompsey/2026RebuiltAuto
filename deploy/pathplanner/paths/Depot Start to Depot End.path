@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8455698474126991,
-        "y": 6.034272133237093
+        "x": 0.8559857512609932,
+        "y": 6.038884766688719
       },
       "isLocked": false,
       "linkedName": "Depot Start"
@@ -20,8 +20,8 @@
         "y": 5.9601139601139606
       },
       "prevControl": {
-        "x": 1.1726192138468892,
-        "y": 5.9252770589511
+        "x": 1.0824767004132894,
+        "y": 5.9031293995288445
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 0.675,
+    "maxVelocity": 0.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1200.0,
