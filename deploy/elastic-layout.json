@@ -1004,16 +1004,29 @@
             }
           },
           {
-            "title": "GameSpecificMessage",
+            "title": "Game Phase",
             "x": 896.0,
             "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/FMSInfo/GameSpecificMessage",
+              "topic": "/Elastic/Game Phase",
               "period": 0.06,
               "data_type": "string"
+            }
+          },
+          {
+            "title": "Phase Time",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/Elastic/Phase Time",
+              "period": 0.06,
+              "data_type": "float"
             }
           }
         ]

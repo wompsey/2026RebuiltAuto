@@ -9,12 +9,62 @@ from phoenix6 import StatusCode, BaseStatusSignal, CANBus
 from pykit.logger import Logger
 from pykit.logtable import LogTable
 from pykit.networktables.loggednetworkinput import LoggedNetworkInput
-from wpilib import Timer, RobotController, PowerDistribution
+from wpilib import Timer, RobotController, PowerDistribution, DriverStation
 from wpimath.geometry import Pose2d, Translation2d
 from pykit.inputs.loggablepowerdistribution import LoggedPowerDistribution
 
 from constants import Constants
 
+def get_game_phase() -> tuple[str, int]:
+    """
+    Returns the current game phase and the remaining time in the game phase.
+    """
+    game_message = DriverStation.getGameSpecificMessage() # Returns the winning alliance for auto as either R or B
+ 
+    match_time = int(DriverStation.getMatchTime())
+    if DriverStation.isAutonomous():
+        return "Autonomous", match_time
+    
+    if not DriverStation.isTeleop():
+        return "Disabled", match_time
+    
+    is_blue = DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+
+    match match_time:
+        case x if x <= 30.0:
+            return "E (Active)", match_time
+        case x if 30.0 < x <= 55.0:
+            status = hub_status(True, game_message, is_blue)
+            return f"S4 ({status})", match_time - 30.0
+        case x if 55.0 < x <= 80.0:
+            status = hub_status(False, game_message, is_blue)
+            return f"S3 ({status})", match_time - 55.0
+        case x if 80.0 < x <= 105.0:
+            status = hub_status(True, game_message, is_blue)
+            return f"S2 ({status})", match_time - 80.0
+        case x if 105.0 < x <= 130.0:
+            status = hub_status(False, game_message, is_blue)
+            return f"S1 ({status})", match_time - 105.0
+        case _:
+            return "T (Active)", match_time - 130.0
+
+def hub_status(winner_active, game_message, is_blue):
+    """
+    Returns the status of the hub based on the winner active and winner.
+    """
+    if not game_message:
+        return "Unknown"
+
+    if winner_active and game_message == "B" and is_blue:
+        return "Active"
+    elif winner_active and game_message == "R" and not is_blue:
+        return "Active"
+    elif not winner_active and game_message == "B" and not is_blue:
+        return "Active"
+    elif not winner_active and game_message == "R" and is_blue:
+        return "Active"
+    else:
+        return "Inactive"
 
 def make_turret_pose_supplier(
     robot_pose_supplier: Callable[[], Pose2d],

@@ -106,10 +106,15 @@ class Dwayne(LoggedRobot):
 
         dashboard_nt = NetworkTableInstance.getDefault().getTable("Elastic")
         self._match_time_pub = dashboard_nt.getFloatTopic("Match Time").publish()
+        self._game_phase_name_pub = dashboard_nt.getStringTopic("Game Phase").publish()
+        self._game_phase_time_pub = dashboard_nt.getFloatTopic("Phase Time").publish()
 
     def robotPeriodic(self) -> None:
         CommandScheduler.getInstance().run()
         self._match_time_pub.set(Timer.getMatchTime())
+        phase_name, phase_time = util.get_game_phase()
+        self._game_phase_name_pub.set(phase_name)
+        self._game_phase_time_pub.set(float(phase_time))
         if self.container.drivetrain is not None:
             self.container._field.setRobotPose(self.container.drivetrain.get_cached_state().pose)
 
