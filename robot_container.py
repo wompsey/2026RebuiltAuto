@@ -28,6 +28,7 @@ from subsystems.hood import HoodSubsystem
 from subsystems.hood.io import HoodIOSim, HoodIOTalonFX
 from subsystems.intake import IntakeSubsystem, IntakeIOSim, IntakeIOTalonFX
 from subsystems.launcher import LauncherIOSim, LauncherIOTalonFX, LauncherSubsystem
+from subsystems.aiming import ShooterAimingTable
 from subsystems.superstructure import Superstructure
 from subsystems.swerve import SwerveSubsystem
 from subsystems.turret import TurretSubsystem
@@ -87,9 +88,6 @@ class RobotContainer:
                 if has_subsystem("turret"):
                     turret_io = TurretIOTalonFX()
                     self.turret = TurretSubsystem(turret_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("Turret, present")
-                else:
-                    print("Turret subsystem not available on this robot")
 
                 # Create climber only if it exists on this robot
                 if has_subsystem("climber"):
@@ -110,37 +108,22 @@ class RobotContainer:
 
                     # Create climber subsystem with real hardware IO
                     self.climber = ClimberSubsystem(climber_io)
-                    print("Climber, Present")
-                else:
-                    print("Climber subsystem not available on this robot")
 
                 if has_subsystem("feeder"):
                     feeder_io = FeederIOTalonFX()
                     self.feeder = FeederSubsystem(feeder_io)
-                    print("Feeder, Present")
-                else:
-                    print("Feeder subsystem not available on this robot")
 
                 if has_subsystem("launcher"):
                     launcher_io = LauncherIOTalonFX()
                     self.launcher = LauncherSubsystem(launcher_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("Launcher, Present")
-                else:
-                    print("Launcher subsystem not available on this robot")
 
                 if has_subsystem("intake"):
                     intake_io = IntakeIOTalonFX()
                     self.intake = IntakeSubsystem(intake_io)
-                    print("Intake, Present")
-                else:
-                    print("Intake subsystem not available on this robot")
 
                 if has_subsystem("hood"):
                     hood_io = HoodIOTalonFX()
                     self.hood = HoodSubsystem(hood_io, lambda: self.drivetrain.get_cached_state().pose)
-                    print("we hood")  # hood is present
-                else:
-                    print("straight out the suburbs") # hood is not present
 
             case Constants.Mode.SIM:
                 # Sim robot, instantiate physics sim IO implementations (if available)
@@ -160,39 +143,23 @@ class RobotContainer:
                 self.turret = TurretSubsystem(TurretIOSim(), turret_pose_sim)
 
                 self.climber = ClimberSubsystem(ClimberIOSim())
-                print("Climber, Present")
 
                 if has_subsystem("feeder"):
                     self.feeder = FeederSubsystem(FeederIOSim())
-                    print("Feeder, Present")
-                else:
-                    print("Feeder subsystem not available on this robot")
 
                 if has_subsystem("launcher"):
                     self.launcher = LauncherSubsystem(LauncherIOSim(), turret_pose_sim)
-                    print("Launcher, Present")
-                else:
-                    print("Launcher subsystem not available on this robot")
 
                 if has_subsystem("intake"):
                     self.intake = IntakeSubsystem(IntakeIOSim())
-                    print("Intake, Present")
-                else:
-                    print("Intake subsystem not available on this robot")
 
                 if has_subsystem("turret"):
                     turret_io = TurretIOSim()
                     self.turret = TurretSubsystem(turret_io, turret_pose_sim)
-                    print("Turret, present")
-                else:
-                    print("Turret subsystem not available on this robot")
 
                 if has_subsystem("hood"):
                     hood_io = HoodIOSim()
                     self.hood = HoodSubsystem(hood_io, turret_pose_sim)
-                    print("we hood")  # hood is present
-                else:
-                    print("straight out the suburbs") # hood is not present
 
         # Fuel simulation (for simulation testing)
         def get_field_speeds():
@@ -217,8 +184,21 @@ class RobotContainer:
             self.fuel_sim.enable_air_resistance()
             self.fuel_sim.start()
 
+        # SOTM: pass drivetrain and turret-center pose for Virtual Goal aiming
+        aim_pose_supplier = (
+            make_turret_pose_supplier(lambda: self.drivetrain.get_cached_state().pose)
+            if self.drivetrain is not None
+            else None
+        )
         self.superstructure = Superstructure(
-            self.intake, self.feeder, self.launcher, self.hood, self.turret
+            self.intake,
+            self.feeder,
+            self.launcher,
+            self.hood,
+            self.turret,
+            drivetrain=self.drivetrain,
+            aim_pose_supplier=aim_pose_supplier,
+            aiming_table=ShooterAimingTable(),
         )
 
         self._setup_swerve_requests()
@@ -251,8 +231,8 @@ class RobotContainer:
             auto = auto.removesuffix(".auto")
             if auto ==".DS_Store":
                 continue
+            print(f'Adding "{auto}"...')
             self._auto_chooser.addOption(auto, PathPlannerAuto(auto, False))
-            print(auto, "initialised")
             self._auto_chooser.addOption(auto + " (Mirrored)", PathPlannerAuto(auto, True))
         self._auto_chooser.setDefaultOption("None", cmd.none())
         self._auto_chooser.addOption("Basic Leave",
@@ -266,7 +246,7 @@ class RobotContainer:
             swerve.requests.FieldCentric()
             .with_deadband(0)
             .with_rotational_deadband(0)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
+            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE)
             .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
 
@@ -274,7 +254,7 @@ class RobotContainer:
             swerve.requests.RobotCentric()
             .with_deadband(0)
             .with_rotational_deadband(0)
-            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.VELOCITY)
+            .with_drive_request_type(swerve.SwerveModule.DriveRequestType.OPEN_LOOP_VOLTAGE)
             .with_steer_request_type(swerve.SwerveModule.SteerRequestType.POSITION)
         )
 
@@ -336,7 +316,7 @@ class RobotContainer:
 
         if self.launcher is not None:
             Trigger(lambda: self._function_controller.getRightTriggerAxis() > 0.75).whileTrue(self.superstructure.set_goal_command(Superstructure.Goal.LAUNCH)).onFalse(self.superstructure.set_goal_command(Superstructure.Goal.DEFAULT))
-            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(self.launcher.set_desired_state(self.launcher.SubsystemState.SCORE)).onFalse(self.launcher.set_desired_state(self.launcher.SubsystemState.IDLE))
+            Trigger(lambda: self._function_controller.getLeftTriggerAxis() > 0.75).whileTrue(self.launcher.set_desired_state_command(self.launcher.SubsystemState.SCORE)).onFalse(self.launcher.set_desired_state_command(self.launcher.SubsystemState.IDLE))
 
         else:
             print("Launcher subsystem not available on this robot, unable to bind launcher buttons")

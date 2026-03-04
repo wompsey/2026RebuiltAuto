@@ -9,12 +9,60 @@ from phoenix6 import StatusCode, BaseStatusSignal, CANBus
 from pykit.logger import Logger
 from pykit.logtable import LogTable
 from pykit.networktables.loggednetworkinput import LoggedNetworkInput
-from wpilib import Timer, RobotController, PowerDistribution
+from wpilib import Timer, RobotController, PowerDistribution, DriverStation
 from wpimath.geometry import Pose2d, Translation2d
 from pykit.inputs.loggablepowerdistribution import LoggedPowerDistribution
 
 from constants import Constants
 
+def get_game_phase() -> tuple[str, int]:
+    """
+    Returns the current game phase and the remaining time in the game phase.
+    """
+    game_message = DriverStation.getGameSpecificMessage() # Returns the winning alliance for auto as either R or B
+ 
+    match_time = int(DriverStation.getMatchTime())
+    if DriverStation.isAutonomous():
+        return "Autonomous", match_time
+    
+    if not DriverStation.isTeleop():
+        return "Disabled", match_time
+    
+    is_blue = DriverStation.getAlliance() == DriverStation.Alliance.kBlue
+
+    match match_time:
+        case x if x <= 30.0:
+            return "E (Active)", match_time
+        case x if 30.0 < x <= 55.0:
+            if is_blue and game_message == "B":
+                return "S4 (Active)", match_time - 30.0
+            elif not is_blue and game_message == "R":
+                return "S4 (Inactive)", match_time - 30.0
+            else:
+                return "S4 (Unknown)", match_time - 30.0
+        case x if 55.0 < x <= 80.0:
+            if is_blue and game_message == "R":
+                return "S3 (Active)", match_time - 55.0
+            elif not is_blue and game_message == "B":
+                return "S3 (Inactive)", match_time - 55.0
+            else:
+                return "S3 (Unknown)", match_time - 55.0
+        case x if 80.0 < x <= 105.0:
+            if is_blue and game_message == "B":
+                return "S2 (Active)", match_time - 80.0
+            elif not is_blue and game_message == "R":
+                return "S2 (Inactive)", match_time - 80.0
+            else:
+                return "S2 (Unknown)", match_time - 80.0
+        case x if 105.0 < x <= 130.0:
+            if is_blue and game_message == "R":
+                return "S1 (Active)", match_time - 105.0
+            elif not is_blue and game_message == "B":
+                return "S1 (Inactive)", match_time - 105.0
+            else:
+                return "S1 (Unknown)", match_time - 105.0
+        case _:
+            return "T (Active)", match_time - 130.0
 
 def make_turret_pose_supplier(
     robot_pose_supplier: Callable[[], Pose2d],

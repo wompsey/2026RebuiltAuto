@@ -27,7 +27,7 @@ class FeederIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class FeederIOInputs:
         """Inputs from the Feeder hardware/simulation."""
         # Motor status

@@ -1,5 +1,6 @@
 from abc import ABC
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from math import pi
 from typing import Final
 
 from phoenix6 import BaseStatusSignal
@@ -7,15 +8,14 @@ from phoenix6.configs import TalonFXConfiguration
 from phoenix6.controls import VelocityVoltage, Follower, VoltageOut
 from phoenix6.hardware import TalonFX
 from phoenix6.signals import NeutralModeValue, MotorAlignmentValue, InvertedValue
-
 from pykit.autolog import autolog
-from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians, radiansToRotations
-from wpimath.system.plant import DCMotor, LinearSystemId
-from wpimath.controller import PIDController
 from wpilib.simulation import FlywheelSim
-from math import pi
+from wpimath.controller import PIDController
+from wpimath.system.plant import DCMotor, LinearSystemId
+from wpimath.units import radians, radians_per_second, volts, amperes, celsius, rotationsToRadians, radiansToRotations
 
 from constants import Constants
+
 LauncherConstants = Constants.LauncherConstants
 GeneralConstants = Constants.GeneralConstants
 CanIds = Constants.CanIDs
@@ -30,7 +30,7 @@ class LauncherIO(ABC):
     """
 
     @autolog
-    @dataclass
+    @dataclass(slots=True)
     class LauncherIOInputs:
         """Inputs from the Launcher hardware/simulation."""
         # Motor status

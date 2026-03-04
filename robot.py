@@ -9,7 +9,7 @@ from pykit.networktables.nt4Publisher import NT4Publisher
 from pykit.wpilog.wpilogwriter import WPILOGWriter
 from wpilib import DriverStation, Timer
 
-import robot_config
+from robot_config import currentRobot, has_subsystem
 
 # Workaround for PyKit: ntcore IntegerPublisher and wpiutil DataLog expect int64,
 # but LogTable.getTimestamp() can exceed int64 max. Patch at source to fix all
@@ -37,8 +37,17 @@ class Dwayne(LoggedRobot):
     def __init__(self, period = 0.02) -> None:
         super().__init__()
 
-        Logger.recordMetadata("Robot", robot_config.currentRobot.name)
+        Logger.recordMetadata("Robot", currentRobot.name)
         Logger.recordMetadata("Mode", Constants.currentMode.name)
+
+        # Record subsystem metadata
+        Logger.recordMetadata("ClimberPresent", str(has_subsystem("climber")))
+        Logger.recordMetadata("FeederPresent", str(has_subsystem("feeder")))
+        Logger.recordMetadata("HoodPresent", str(has_subsystem("hood")))
+        Logger.recordMetadata("IntakePresent", str(has_subsystem("intake")))
+        Logger.recordMetadata("LauncherPresent", str(has_subsystem("intake")))
+        Logger.recordMetadata("TurretPresent", str(has_subsystem("turret")))
+        Logger.recordMetadata("VisionPresent", str(has_subsystem("vision")))
 
         match Constants.currentMode:
             # Running on a real robot, log to a USB stick ("/U/logs")
@@ -90,14 +99,22 @@ class Dwayne(LoggedRobot):
         SignalLogger.stop()
         wpilib.LiveWindow.disableAllTelemetry()
 
+        # We can check ourselves if we're overrunning
+        # And the warning it prints is laggy, so this makes it only tell us if
+        # We're REALLY lagging
+        CommandScheduler.getInstance().setPeriod(1.0)
+
         dashboard_nt = NetworkTableInstance.getDefault().getTable("Elastic")
         self._match_time_pub = dashboard_nt.getFloatTopic("Match Time").publish()
-
-        print("Robot initialized")
+        self._game_phase_name_pub = dashboard_nt.getStringTopic("Game Phase").publish()
+        self._game_phase_time_pub = dashboard_nt.getFloatTopic("Phase Time").publish()
 
     def robotPeriodic(self) -> None:
         CommandScheduler.getInstance().run()
         self._match_time_pub.set(Timer.getMatchTime())
+        phase_name, phase_time = util.get_game_phase()
+        self._game_phase_name_pub.set(phase_name)
+        self._game_phase_time_pub.set(float(phase_time))
         if self.container.drivetrain is not None:
             self.container._field.setRobotPose(self.container.drivetrain.get_cached_state().pose)
 
